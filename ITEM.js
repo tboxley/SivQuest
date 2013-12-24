@@ -37,13 +37,6 @@ var ITEM = new function(){
   self.types=["weapon","potion","amulet","cloak","armor"];
   self.desc={dagger:"Daggers",sword:"Swords",shield:"Shields",staff:"Staves",wand:"Wands",heavy:"Heavy Armor",medium:"Medium Armor",light:"Light Armor",axe:"Axes",polearm:"Polearms"};
   
-  
-  self.resetPCitems = function(){
-    var tmpArr=PC.items;
-    PC.items=[];
-    for(var n = 0;n<tmpArr.length;n++) if(typeof tmpArr[n]!=="undefined") PC.items.push(tmpArr[n]);
-  };
-  
   self.resetBoardItems=function(x,y){
     var tmpArr=[],n=0;
     if(!x) x = PC.X;
@@ -150,8 +143,7 @@ self.dropItem=function(){
     items[PC.items[curPos]].owned=0;
     self.setItem(PC.X,PC.Y,PC.items[curPos]);
     
-    delete PC.items[curPos];
-    self.resetPCitems();
+    PC.items.splice(curPos,1);
     if(curPos>PC.items.length-1) curPos=PC.items.length-1;
     
     msg="You drop the "+dropped;
@@ -273,9 +265,8 @@ self.equipItem=function(){
       items[self.sortArray[curPos]].equip=1;
       items[self.sortArray[curPos]].owned=0;
       items[self.sortArray[curPos]].idd=1;
-      for(var x in PC.items) if(PC.items[x]==self.sortArray[curPos]) delete PC.items[x];
+      for(var x in PC.items) if(PC.items[x]==self.sortArray[curPos]) PC.items.splice(x,1);
       msg+=" equip the "+ITEM.itemName(PC.equip[part])+".";
-      ITEM.resetPCitems();
       self.sort=0;
       curPos=lastPos;
       ENTITY.updateArmor();
