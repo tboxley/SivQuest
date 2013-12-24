@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>ITEM</title>
+  <link rel="stylesheet" href="qunit/qunit.css">
+</head>
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture"></div>
+  <script src="qunit/qunit.js"></script>
+  <script src="../jquery-2.0.3.min.js"></script>
+  <script src="../ITEM.js"></script>
+  <script>
+  	module("ITEMS");
+
+  	asyncTest("Item Loading",function(){
+  		var checkLoadedItems = function(){
+  			ok(ITEM.materials, "Materials successfully loaded");
+  			ok(ITEM.artifacts, "Artifacts successfully loaded");
+  			ok(ITEM.cloaks, "Cloaks successfully loaded");
+			ok(ITEM.weapons, "Weapons successfully loaded");
+			ok(ITEM.armor, "Armor successfully loaded");
+			ok(ITEM.amulets, "Amulets successfully loaded");
+			ok(ITEM.potions, "Potions successfully loaded");
+			ok(ITEM.prefixes, "Prefixes successfully loaded");
+			ok(ITEM.aPre.length, "aPre array populated")
+			ok(ITEM.wPre.length, "wPre array populated")
+			start()
+  		}
+
+  		ITEM.loadJSON()
+  		.done(checkLoadedItems)
+  		.fail(checkLoadedItems);
+  	});
+  </script>
+</body>
+</html>
