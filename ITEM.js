@@ -208,7 +208,7 @@ self.unequipItem=function(){
 
 
 self.equipItem=function(){
-  var artifact,type,PCInfo=profs[PC.prof],success=0,part,msg="You";
+  var artifact,type,PCInfo=profs[PC.prof],success=0,part,msg="You",i;
     type=items[self.sortArray[curPos]].type;
     artifact=items[self.sortArray[curPos]].artifact;
     switch(type[0]){
@@ -265,7 +265,7 @@ self.equipItem=function(){
       items[self.sortArray[curPos]].equip=1;
       items[self.sortArray[curPos]].owned=0;
       items[self.sortArray[curPos]].idd=1;
-      for(var x in PC.items) if(PC.items[x]==self.sortArray[curPos]) PC.items.splice(x,1);
+      for(i=0;i<PC.items.length;i++) if(PC.items[i]==self.sortArray[curPos]) PC.items.splice(i,1);
       msg+=" equip the "+ITEM.itemName(PC.equip[part])+".";
       self.sort=0;
       curPos=lastPos;
