@@ -17,16 +17,11 @@ $(window).keydown(function(e) {
       flags.changelog=0;
       flags.title=1;
     break;
-    
-    case 'up':
-      if(curPos) curPos--;
-      SCREEN.changelog();
+      
+    case 'g':
+      window.open('https://github.com/sivart0/SivQuest','_blank');
     break;
-    
-    case 'down':
-      curPos++;
-      SCREEN.changelog();
-    break;
+
   }
   else if(flags.title) switch(keys[kc]){
     case 'return':
