@@ -18,6 +18,7 @@
   		var checkLoadedItems = function(){
   			ok(ITEM.materials, "Materials successfully loaded");
   			ok(ITEM.artifacts, "Artifacts successfully loaded");
+            ok(ITEM.artifactList.length, "artifactList array populated");
   			ok(ITEM.cloaks, "Cloaks successfully loaded");
 			ok(ITEM.weapons, "Weapons successfully loaded");
 			ok(ITEM.armor, "Armor successfully loaded");
@@ -26,12 +27,12 @@
 			ok(ITEM.prefixes, "Prefixes successfully loaded");
 			ok(ITEM.aPre.length, "aPre array populated")
 			ok(ITEM.wPre.length, "wPre array populated")
+            ok(ITEM.suffixes, "Suffixes successfully loaded")
 			start()
   		}
 
-  		ITEM.loadJSON()
-  		.done(checkLoadedItems)
-  		.fail(checkLoadedItems);
+  		ITEM.loadJSON("../")
+        .always(checkLoadedItems)
   	});
   </script>
 </body>

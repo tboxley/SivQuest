@@ -11,7 +11,8 @@ var ITEM = new function(){
   self.aSuf=[];
   self.wSuf=[];
   self.loadJSON=function(basedir){
-    basedir=basedir||""
+    basedir=basedir||"";
+    
     return $.when(
       $.getJSON(basedir+"json/materials.json",function(moo){self.materials=moo;}),
       $.getJSON(basedir+"json/artifacts.json").success(function(moo){self.artifacts=moo;}).then(function(){
