@@ -11,24 +11,27 @@ var ITEM = new function(){
   self.aSuf=[];
   self.wSuf=[];
   self.loadJSON=function(){
-    $.getJSON("json/materials.json",function(moo){self.materials=moo;});
-    $.getJSON("json/artifacts.json").success(function(moo){self.artifacts=moo;}).then(function(){
-      for(var moose in self.artifacts) self.artifactList.push(moose);
-    });
-    $.getJSON("json/cloaks.json",function(moo){self.cloaks=moo;});
-    $.getJSON("json/weapons.json",function(moo){self.weapons=moo;});
-    $.getJSON("json/armor.json",function(moo){self.armor=moo;});
-    $.getJSON("json/amulets.json",function(moo){self.amulets=moo;});
-    $.getJSON("json/potions.json",function(moo){self.potions=moo;});
-    $.getJSON("json/prefixes.json").success(function(moo){self.prefixes=moo;}).then(function(){
-      for(var moose in self.prefixes.aPrefixes) self.aPre.push(moose);
-      for(moose in self.prefixes.wPrefixes) self.wPre.push(moose);
-    });
-    
-    $.getJSON("json/suffixes.json").success(function(moo){self.suffixes=moo;}).then(function(){
-      for(var moose in self.suffixes.aSuffixes) self.aSuf.push(moose);
-      for(moose in self.suffixes.wSuffixes) self.wSuf.push(moose);
-    });
+    var basepath=document.location.toString().match('tests')?'../':'';
+    return $.when(
+      $.getJSON(basepath+"json/materials.json",function(moo){self.materials=moo;}),
+      $.getJSON(basepath+"json/artifacts.json").success(function(moo){self.artifacts=moo;}).then(function(){
+        for(var moose in self.artifacts) self.artifactList.push(moose);
+      }),
+      $.getJSON(basepath+"json/cloaks.json",function(moo){self.cloaks=moo;}),
+      $.getJSON(basepath+"json/weapons.json",function(moo){self.weapons=moo;}),
+      $.getJSON(basepath+"json/armor.json",function(moo){self.armor=moo;}),
+      $.getJSON(basepath+"json/amulets.json",function(moo){self.amulets=moo;}),
+      $.getJSON(basepath+"json/potions.json",function(moo){self.potions=moo;}),
+      $.getJSON(basepath+"json/prefixes.json").success(function(moo){self.prefixes=moo;}).then(function(){
+        for(var moose in self.prefixes.aPrefixes) self.aPre.push(moose);
+        for(moose in self.prefixes.wPrefixes) self.wPre.push(moose);
+      }),
+      
+      $.getJSON(basepath+"json/suffixes.json").success(function(moo){self.suffixes=moo;}).then(function(){
+        for(var moose in self.suffixes.aSuffixes) self.aSuf.push(moose);
+        for(moose in self.suffixes.wSuffixes) self.wSuf.push(moose);
+      })
+    );
   };
   self.types=["weapon","potion","amulet","cloak","armor"];
   self.desc={dagger:"Daggers",sword:"Swords",shield:"Shields",staff:"Staves",wand:"Wands",heavy:"Heavy Armor",medium:"Medium Armor",light:"Light Armor",axe:"Axes",polearm:"Polearms"};
