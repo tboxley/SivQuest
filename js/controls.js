@@ -3,8 +3,13 @@
 $(window).keydown(function(e) {
   'use strict';
   //e.preventDefault();
-  var kc = e.which,keys={13:'return',27:'esc',32:'space',33:'pgup',34:'pgdn',37:'left',38:'up',39:'right',40:'down'},i;
+  var kc = e.which,keys={8:'bksp', 13:'return',27:'esc',32:'space',33:'pgup',34:'pgdn',37:'left',38:'up',39:'right',40:'down'},i;
   for(i = 65;i<=90;i++) keys[i]=String.fromCharCode(i).toLowerCase();
+
+  //prevent history back on backspace
+  if(keys[kc]=='bksp') {
+    e.preventDefault();
+  }
   
   if(flags.changelog) switch(keys[kc]){
     case 'esc':
