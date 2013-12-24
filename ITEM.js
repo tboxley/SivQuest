@@ -1,4 +1,4 @@
-/*globals SETUP,flags,SCREEN,PC:true,items:true,ITEM,prompt,ENTITY:true,WORLD,plist,rlist,pickp,pickr,picks,races,profs,mobs:true,console,$,curPos:true,pickr:true,pickp:true,picks:true,lastPos:true*/
+/*globals ITEM:true*/
 /*jshint unused:true,supernew:true*/
 var ITEM = new function(){
   "use strict";
@@ -10,24 +10,25 @@ var ITEM = new function(){
   self.wPre=[];
   self.aSuf=[];
   self.wSuf=[];
-  self.loadJSON=function(){
-    var basepath=document.location.toString().match('tests')?'../':'';
+  self.loadJSON=function(basedir){
+    basedir=basedir||"";
+    
     return $.when(
-      $.getJSON(basepath+"json/materials.json",function(moo){self.materials=moo;}),
-      $.getJSON(basepath+"json/artifacts.json").success(function(moo){self.artifacts=moo;}).then(function(){
+      $.getJSON(basedir+"json/materials.json",function(moo){self.materials=moo;}),
+      $.getJSON(basedir+"json/artifacts.json").success(function(moo){self.artifacts=moo;}).then(function(){
         for(var moose in self.artifacts) self.artifactList.push(moose);
       }),
-      $.getJSON(basepath+"json/cloaks.json",function(moo){self.cloaks=moo;}),
-      $.getJSON(basepath+"json/weapons.json",function(moo){self.weapons=moo;}),
-      $.getJSON(basepath+"json/armor.json",function(moo){self.armor=moo;}),
-      $.getJSON(basepath+"json/amulets.json",function(moo){self.amulets=moo;}),
-      $.getJSON(basepath+"json/potions.json",function(moo){self.potions=moo;}),
-      $.getJSON(basepath+"json/prefixes.json").success(function(moo){self.prefixes=moo;}).then(function(){
+      $.getJSON(basedir+"json/cloaks.json",function(moo){self.cloaks=moo;}),
+      $.getJSON(basedir+"json/weapons.json",function(moo){self.weapons=moo;}),
+      $.getJSON(basedir+"json/armor.json",function(moo){self.armor=moo;}),
+      $.getJSON(basedir+"json/amulets.json",function(moo){self.amulets=moo;}),
+      $.getJSON(basedir+"json/potions.json",function(moo){self.potions=moo;}),
+      $.getJSON(basedir+"json/prefixes.json").success(function(moo){self.prefixes=moo;}).then(function(){
         for(var moose in self.prefixes.aPrefixes) self.aPre.push(moose);
         for(moose in self.prefixes.wPrefixes) self.wPre.push(moose);
       }),
       
-      $.getJSON(basepath+"json/suffixes.json").success(function(moo){self.suffixes=moo;}).then(function(){
+      $.getJSON(basedir+"json/suffixes.json").success(function(moo){self.suffixes=moo;}).then(function(){
         for(var moose in self.suffixes.aSuffixes) self.aSuf.push(moose);
         for(moose in self.suffixes.wSuffixes) self.wSuf.push(moose);
       })
@@ -35,13 +36,6 @@ var ITEM = new function(){
   };
   self.types=["weapon","potion","amulet","cloak","armor"];
   self.desc={dagger:"Daggers",sword:"Swords",shield:"Shields",staff:"Staves",wand:"Wands",heavy:"Heavy Armor",medium:"Medium Armor",light:"Light Armor",axe:"Axes",polearm:"Polearms"};
-  
-  
-  self.resetPCitems = function(){
-    var tmpArr=PC.items;
-    PC.items=[];
-    for(var n = 0;n<tmpArr.length;n++) if(typeof tmpArr[n]!=="undefined") PC.items.push(tmpArr[n]);
-  };
   
   self.resetBoardItems=function(x,y){
     var tmpArr=[],n=0;
@@ -149,8 +143,7 @@ self.dropItem=function(){
     items[PC.items[curPos]].owned=0;
     self.setItem(PC.X,PC.Y,PC.items[curPos]);
     
-    delete PC.items[curPos];
-    self.resetPCitems();
+    PC.items.splice(curPos,1);
     if(curPos>PC.items.length-1) curPos=PC.items.length-1;
     
     msg="You drop the "+dropped;
@@ -272,9 +265,8 @@ self.equipItem=function(){
       items[self.sortArray[curPos]].equip=1;
       items[self.sortArray[curPos]].owned=0;
       items[self.sortArray[curPos]].idd=1;
-      for(var x in PC.items) if(PC.items[x]==self.sortArray[curPos]) delete PC.items[x];
+      for(var x in PC.items) if(PC.items[x]==self.sortArray[curPos]) PC.items.splice(x,1);
       msg+=" equip the "+ITEM.itemName(PC.equip[part])+".";
-      ITEM.resetPCitems();
       self.sort=0;
       curPos=lastPos;
       ENTITY.updateArmor();
