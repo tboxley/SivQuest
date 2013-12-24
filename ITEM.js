@@ -1,4 +1,4 @@
-/*globals SETUP,flags,SCREEN,PC:true,items:true,ITEM,prompt,ENTITY:true,WORLD,plist,rlist,pickp,pickr,picks,races,profs,mobs:true,console,$,curPos:true,pickr:true,pickp:true,picks:true,lastPos:true*/
+/*globals ITEM:true*/
 /*jshint unused:true,supernew:true*/
 var ITEM = new function(){
   "use strict";
@@ -10,24 +10,24 @@ var ITEM = new function(){
   self.wPre=[];
   self.aSuf=[];
   self.wSuf=[];
-  self.loadJSON=function(){
-    var basepath=document.location.toString().match('tests')?'../':'';
+  self.loadJSON=function(basedir){
+    basedir=basedir||""
     return $.when(
-      $.getJSON(basepath+"json/materials.json",function(moo){self.materials=moo;}),
-      $.getJSON(basepath+"json/artifacts.json").success(function(moo){self.artifacts=moo;}).then(function(){
+      $.getJSON(basedir+"json/materials.json",function(moo){self.materials=moo;}),
+      $.getJSON(basedir+"json/artifacts.json").success(function(moo){self.artifacts=moo;}).then(function(){
         for(var moose in self.artifacts) self.artifactList.push(moose);
       }),
-      $.getJSON(basepath+"json/cloaks.json",function(moo){self.cloaks=moo;}),
-      $.getJSON(basepath+"json/weapons.json",function(moo){self.weapons=moo;}),
-      $.getJSON(basepath+"json/armor.json",function(moo){self.armor=moo;}),
-      $.getJSON(basepath+"json/amulets.json",function(moo){self.amulets=moo;}),
-      $.getJSON(basepath+"json/potions.json",function(moo){self.potions=moo;}),
-      $.getJSON(basepath+"json/prefixes.json").success(function(moo){self.prefixes=moo;}).then(function(){
+      $.getJSON(basedir+"json/cloaks.json",function(moo){self.cloaks=moo;}),
+      $.getJSON(basedir+"json/weapons.json",function(moo){self.weapons=moo;}),
+      $.getJSON(basedir+"json/armor.json",function(moo){self.armor=moo;}),
+      $.getJSON(basedir+"json/amulets.json",function(moo){self.amulets=moo;}),
+      $.getJSON(basedir+"json/potions.json",function(moo){self.potions=moo;}),
+      $.getJSON(basedir+"json/prefixes.json").success(function(moo){self.prefixes=moo;}).then(function(){
         for(var moose in self.prefixes.aPrefixes) self.aPre.push(moose);
         for(moose in self.prefixes.wPrefixes) self.wPre.push(moose);
       }),
       
-      $.getJSON(basepath+"json/suffixes.json").success(function(moo){self.suffixes=moo;}).then(function(){
+      $.getJSON(basedir+"json/suffixes.json").success(function(moo){self.suffixes=moo;}).then(function(){
         for(var moose in self.suffixes.aSuffixes) self.aSuf.push(moose);
         for(moose in self.suffixes.wSuffixes) self.wSuf.push(moose);
       })
