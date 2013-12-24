@@ -26,8 +26,6 @@ var WORLD=new function(){
     boardTiles[x+','+y].seen=0;
     boardTiles[x+','+y].door=0;
     if(ti=='grass'&&!Math.rand(0,25)) boardTiles[x+','+y].overlay='tree';
-  
-    
   };
   
   
