@@ -1,21 +1,20 @@
-/*globals flags,SCREEN,PC:true,items:true,ITEM,prompt,ENTITY,WORLD,plist,rlist,pickp,pickr,picks,races,profs*/
+/*globals flags,SCREEN:true,PC:true,items:true,ITEM,ENTITY,WORLD,plist,rlist,pickp,pickr,picks,races,profs*/
 /*jshint unused:true,supernew:true */
-var SCREEN=new function(){
+SCREEN = new function(){
 
-<?php
-  header('Content-type: text/javascript');
-  $arr = Array();
-  foreach(glob("img/*") as $v) $arr[]="'".substr($v,4,-4)."'";
-  echo "var imgs=[".implode(',',$arr)."]";
-?>
-,tiles={},camera={},self=this,blankScreen,loadImages,writeText,helpText,drawTile,barDraws=0,gameVersion='PreAlpha 11',ctx;
+  var tiles=[],camera={},self=this,blankScreen,loadImages,writeText,helpText,drawTile,barDraws=0,gameVersion='PreAlpha 11',ctx;
   self.cty=0;
   self.mobsSee=[];
+
+
   loadImages=function(){
-    for(var i=0;i<imgs.length;i++){
-      tiles[imgs[i]]= new Image();
-      tiles[imgs[i]].src='img/'+imgs[i]+'.png';
-    }
+    $.getJSON("json/images.php").success(function(data){
+      var imgs = data['imgs'];
+      for(var i=0;i<imgs.length;i++){
+        tiles[imgs[i]]=new Image();
+        tiles[imgs[i]].src='img/'+imgs[i]+'.png';
+      }
+    });
   };
   loadImages();
   
