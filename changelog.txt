@@ -1,1 +1,3 @@
-CHANGELOG IS MOOT
+The sourcecode for SivQuest is now available on github!
+
+https://github.com/sivart0/SivQuest
