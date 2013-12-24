@@ -1,4 +1,4 @@
-/*globals SETUP,flags,SCREEN,PC:true,items:true,ITEM,prompt,ENTITY:true,WORLD,plist,rlist,pickp,pickr,picks,races,profs,mobs:true,console,$,curPos:true,pickr:true,pickp:true,picks:true,lastPos:true*/
+/*globals SETUP,flags,SCREEN,PC:true,ITEM,ENTITY:true,WORLD,plist,rlist,pickp,pickr,picks,$,curPos:true,pickr:true,pickp:true,picks:true,lastPos:true*/
 /*jshint unused:true,supernew:true*/
 $(window).keydown(function(e) {
   'use strict';
