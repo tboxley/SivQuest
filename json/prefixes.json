@@ -1,0 +1,11 @@
+{
+	"wPrefixes":{
+		"burn":{"fName":"Burning"},
+		"freeze":{"fName":"Freezing"},
+		"slip":{"fName":"Slippery"}
+	},
+	
+	"aPrefixes":{
+		"heavy":{"fName":"Heavy"}
+	}
+}

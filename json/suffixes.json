@@ -1,0 +1,10 @@
+{
+	"wSuffixes":{
+		"sharp":{"fName":"Sharpness","sword":1,"axe":1,"dagger":1}
+	},
+	
+	"aSuffixes":{
+		"regen":{"fName":"Renegeration","all":1},
+		"speed":{"fName":"Quickness","boots":1}
+	}
+}

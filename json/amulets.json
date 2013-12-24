@@ -1,0 +1,6 @@
+{
+  "li":{"name":"Light","stats":[0,0,0,0,0],"armor":0},
+  "regen":{"name":"Regeneration","stats":[0,0,0,0,0],"armor":0,"regen":1},
+  "def":{"name":"Defense","stats":[0,0,2,0,0],"armor":0},
+  "pro":{"name":"Protection","stats":[0,0,0,0,0],"armor":1}
+}

@@ -1,0 +1,5 @@
+{
+  "goblin":{"name":"Goblin","HP":[2,8],"STR":[2,4],"DEF":[1,4],"SPD":[3,6],"INT":[1,4],"armor":[1,4],"level":1},
+  "orc":{"name":"Orc","HP":[2,8],"STR":[2,4],"DEF":[1,4],"SPD":[3,6],"INT":[1,4],"armor":[1,4],"level":1},
+  "kobold":{"name":"Kobold","HP":[2,8],"STR":[2,4],"DEF":[1,4],"SPD":[3,6],"INT":[1,4],"armor":[1,4],"level":1}
+}

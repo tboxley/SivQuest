@@ -1,0 +1,6 @@
+{
+  "lHelm":{"fName":"Light Helmet","type":["head","light"],"armor":2},
+  "mHelm":{"fName":"Medium Helmet","type":["head","medium"],"armor":5},
+  "hHelm":{"fName":"Heavy Helmet","type":["head","heavy"],"armor":8},
+  "boots":{"fName":"Boots","type":["boots","*"],"armor":3}
+}

@@ -1,0 +1,5 @@
+{
+	"relic3":{"name":"Gungnir","uid":"ono","toHit":7,"toDmg":5,"armor":11,"stats":[5,4,3,12,1],"artifact":1,"mat":"Yhhdrasil","type":["2hand","polearm"],"desc":"Odin's spear"},
+	"fpan":{"name":"Princess' Skillet","uid":"Well seasoned skillet","toHit":7,"toDmg":5,"armor":0,"stats":[5,4,3,12,1],"artifact":1,"mat":"Cast Iron","type":["1hand","hammer"],"desc":"Who knew?"}
+
+}

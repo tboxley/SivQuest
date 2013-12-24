@@ -1,0 +1,7 @@
+{
+  "dag":{"fName":"Dagger","type":["1hand","dagger"],"die":[1,4]},
+  "sSword":{"fName":"Shortsword","type":["1hand","sword"],"die":[1,6]},
+  "lSword":{"fName":"Longsword","type":["1hand","sword"],"die":[1,8]},
+  "bAxe":{"fName":"Battleaxe","type":["1hand","axe"],"die":[1,8]},
+  "qStaff":{"fName":"Quarterstaff","type":["2hand","staff"],"die":[1,10]}
+}
