@@ -332,10 +332,10 @@ self.drinkPotion=function(){
   
 };
 
-self.generateItem=function(x,y,z){
-  var matArr=[],typeArr=[],theMat,theName="",theType,uid,randArt,whatIsIt,statAdd=[0,0,0,0,0],regen,kind,armor=0,i,tmpItem,prefix,suffix;
-  if(z) whatIsIt=z;
-  else whatIsIt=self.types[Math.rand(0,self.types.length-1)];
+self.generateItem=function(x,y,whatIsIt){
+  var matArr=[],typeArr=[],theMat,theName="",theType,theWeapon,uid,randArt,whatIsIt,statAdd=[0,0,0,0,0],regen,kind,armor=0,i,tmpItem,prefix,suffix;
+
+  whatIsIt=whatIsIt || self.types[Math.rand(0,self.types.length-1)];
   
     if(!Math.rand(0,1600-(WORLD.level*4))&&self.artifactList.length&&!z){
       console.log("RELIC");
@@ -353,29 +353,47 @@ self.generateItem=function(x,y,z){
     
     else switch(whatIsIt){
       case "weapon":
-        for(i in self.materials) if(self.materials[i].level<=WORLD.level+Math.rand(0,1)-1)matArr.push(i);
-        for(i in self.weapons) typeArr.push(i);
-        theMat=matArr[Math.rand(0,matArr.length-1)];
-        theType=typeArr[Math.rand(0,typeArr.length-1)];
-        theName=self.materials[theMat].fName+" "+self.weapons[theType].fName;
-        uid = self.weapons[theType].fName;
-        tmpItem={name:theName,uid:uid,mat:theMat,type:self.weapons[theType].type};
-        tmpItem.toHit=self.materials[theMat].toHit;
-        tmpItem.toDmg=self.materials[theMat].toDmg;
-        tmpItem.armor=0;
-        tmpItem.die=self.weapons[theType].die;
-        for(var n=0;n<5;n++) statAdd[n]+=self.materials[theMat].stats[n];
-        tmpItem.stats=statAdd;
-        if(!Math.rand(0,750-(WORLD.level*4)-self.materials[theMat].level)){
-          prefix=self.wPre[Math.rand(0,self.wPre.length-1)];
-          tmpItem.name=self.prefixes.wPrefixes[prefix].fName+" "+tmpItem.name;
+        //sets theMat to a random material with a level less than the current WORLD's level
+        //coin flip for WORLD.level or WORLD.level-1
+        theMat = _.sample(
+          _.filter(ITEM.materials,function(m){
+              return m.level<=WORLD.level-_.random(1);
+          })
+        );
+        //picks a random weapon object
+        theWeapon = _.sample(self.weapons);
+
+        tmpItem = {
+          name: theMat.fName+" "+theWeapon.fName,
+          uid: theWeapon.fName,
+          mat: _.findKey(self.materials,theMat), //finds the actual key name given our material object
+          type: theWeapon.type,
+          toHit: theMat.toHit,
+          toDmg: theMat.toDmg,
+          armor: 0,
+          die: theWeapon.die,
+          stats: _.clone(theMat.stats)
+        };
+
+        //weapon buffs, stupidly rare
+
+        //prefix
+        if(!Math.rand(0,750-(WORLD.level*4)-theMat.level)){
+          tmpItem.name=_.sample(self.prefixes.wPrefixes).fName+" "+tmpItem.name;
         }
         
-        if(!Math.rand(0,750-(WORLD.level*4)-self.materials[theMat].level)){
-          suffix=self.wSuf[Math.rand(0,self.wSuf.length-1)];
-          if(self.suffixes.wSuffixes[suffix][tmpItem.type[1]]||self.suffixes.wSuffixes[suffix].all){
-          tmpItem.name+=" of "+self.suffixes.wSuffixes[suffix].fName;
-          }
+        //suffix
+        if(!Math.rand(0,750-(WORLD.level*4)-theMat.level)){
+
+          //returns a random suffix object
+          //from a filtered collection of wSuffixes
+          //that are capable of being applied to the selected weapon
+          suffix=_.sample(
+            _.filter(self.suffixes.wSuffixes,function(suf){
+              return suf[theWeapon.type] || suf.all;
+            })
+          );
+          tmpItem.name+=" of "+suffix.fName;
         }
         
       break;
@@ -456,6 +474,7 @@ self.generateItem=function(x,y,z){
     tmpItem.equip=0;
     items.push(tmpItem);
     self.setItem(x,y,items.length-1);
+    return tmpItem;
 };
 
 
