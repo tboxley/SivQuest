@@ -5,33 +5,19 @@ var ITEM = new function(){
   var self = this;
   self.sort=0;
   self.sortArray=[];
-  self.artifactList=[];
-  self.aPre=[];
-  self.wPre=[];
-  self.aSuf=[];
-  self.wSuf=[];
   self.loadJSON=function(basedir){
     basedir=basedir||"";
     
     return $.when(
       $.getJSON(basedir+"json/materials.json",function(moo){self.materials=moo;}),
-      $.getJSON(basedir+"json/artifacts.json").success(function(moo){self.artifacts=moo;}).then(function(){
-        for(var moose in self.artifacts) self.artifactList.push(moose);
-      }),
+      $.getJSON(basedir+"json/artifacts.json").success(function(moo){self.artifacts=moo;}),
       $.getJSON(basedir+"json/cloaks.json",function(moo){self.cloaks=moo;}),
       $.getJSON(basedir+"json/weapons.json",function(moo){self.weapons=moo;}),
       $.getJSON(basedir+"json/armor.json",function(moo){self.armor=moo;}),
       $.getJSON(basedir+"json/amulets.json",function(moo){self.amulets=moo;}),
       $.getJSON(basedir+"json/potions.json",function(moo){self.potions=moo;}),
-      $.getJSON(basedir+"json/prefixes.json").success(function(moo){self.prefixes=moo;}).then(function(){
-        for(var moose in self.prefixes.aPrefixes) self.aPre.push(moose);
-        for(moose in self.prefixes.wPrefixes) self.wPre.push(moose);
-      }),
-      
-      $.getJSON(basedir+"json/suffixes.json").success(function(moo){self.suffixes=moo;}).then(function(){
-        for(var moose in self.suffixes.aSuffixes) self.aSuf.push(moose);
-        for(moose in self.suffixes.wSuffixes) self.wSuf.push(moose);
-      })
+      $.getJSON(basedir+"json/prefixes.json").success(function(moo){self.prefixes=moo;}),
+      $.getJSON(basedir+"json/suffixes.json").success(function(moo){self.suffixes=moo;})
     );
   };
   self.types=["weapon","potion","amulet","cloak","armor"];
@@ -69,59 +55,30 @@ var ITEM = new function(){
     }
   };
 
-  self.itemSorter=function(x){
-    var part;
-    self.sortArray=[];
-    switch(self.sort){
-      case 1:
-        part=["head"];
-      break;
-  
-      case 2:
-        part=["amulet"];
-      break;
-  
-      case 3:
-        part=["cloak"];
-      break;
-    
-      case 4:
-        part=["armor"];
-      break;
-    
-      case 5:
-        part=["1hand","2hand"];
-      break;
-    
-      case 6:
-        part=["shield"];
-      break;
+  self.itemSorter=function(){
+    var filterType=[
+      null,
+      ["head"],
+      ["amulet"],
+      ["cloak"],
+      ["armor"],
+      ["1hand","2hand"],
+      ["shield"],
+      ["bracers"],
+      ["gauntlets"],
+      ["boots"],
+      ["potion"],
+      ["scroll"]
+    ][self.sort];
 
-      case 7:
-        part=["bracers"];
-      break;
-
-      case 8:
-        part=["gauntlets"];
-      break;
-  
-      case 9:
-        part=["boots"];
-      break;
-    
-      case 10:
-        part=["potion"];
-      break;
-
-      case 11:
-        part=["scroll"];
-      break;
-    }
-    
-    for(x=0;x<PC.items.length;x++){
-      if(items[PC.items[x]].type[0]==part[0]) self.sortArray.push(PC.items[x]);
-      if(part.length==2&&items[PC.items[x]].type[0]==part[1]) self.sortArray.push(PC.items[x]);
-    }
+    //this will be hard to wrap your head around, but I'll comment it
+    self.sortArray = _.chain(PC.items)                       //first we start with a list of ID names
+      .filter(function(itemID){                              //we filter them:
+        return _.any(items[itemID].type, function(type){     //if any of the types listed in the item
+            return _.contains(filterType,type);              //is contained in our filterType search
+          });                                                //it will be included in the final search result
+      })
+      .value(); //grabs the final result (a list of item IDs matching our search criteria)
   };
   
   self.itemId=function(x,y){
@@ -333,20 +290,23 @@ self.drinkPotion=function(){
 };
 
 self.generateItem=function(x,y,whatIsIt){
-  var matArr=[],typeArr=[],theMat,theName="",theType,theWeapon,uid,randArt,whatIsIt,statAdd=[0,0,0,0,0],regen,kind,armor=0,i,tmpItem,prefix,suffix;
+  var theMat,theItem,kind,tmpItem,suffix;
 
   whatIsIt=whatIsIt || self.types[Math.rand(0,self.types.length-1)];
   
-    if(!Math.rand(0,1600-(WORLD.level*4))&&self.artifactList.length&&!z){
+    if(!Math.rand(0,1600-(WORLD.level*4))&&self.artifacts.length&&!whatIsIt){
       console.log("RELIC");
-      randArt=Math.rand(0,self.artifactList.length-1);
-      tmpItem=self.artifacts[self.artifactList[randArt]];
-      delete self.artifactList[randArt];
-      theMat=self.artifactList;
-      self.artifactList=[];
-      for(i in theMat){
-        self.artifactList.push(theMat[i]);
-      }
+
+      //choose a random artifact
+      theItem = _.sample(self.artifacts);
+      
+      //remove it from artifacts
+      delete self.artifacts[_.findKey(self.artifacts,theItem)];
+
+      //SIV FIX THIS
+      //I don't know what properties relics should have. For now,
+      //I just copy the entire artifact object
+      tmpItem=theItem;
 
       
     }
@@ -356,22 +316,22 @@ self.generateItem=function(x,y,whatIsIt){
         //sets theMat to a random material with a level less than the current WORLD's level
         //coin flip for WORLD.level or WORLD.level-1
         theMat = _.sample(
-          _.filter(ITEM.materials,function(m){
+          _.filter(self.materials,function(m){
               return m.level<=WORLD.level-_.random(1);
           })
         );
         //picks a random weapon object
-        theWeapon = _.sample(self.weapons);
+        theItem = _.sample(self.weapons);
 
         tmpItem = {
-          name: theMat.fName+" "+theWeapon.fName,
-          uid: theWeapon.fName,
-          mat: _.findKey(self.materials,theMat), //finds the actual key name given our material object
-          type: theWeapon.type,
+          name:  theMat.fName+" "+theItem.fName,
+          uid:   theItem.fName,
+          mat:   _.findKey(self.materials,theMat), //finds the actual key name given our material object
+          type:  theItem.type,
           toHit: theMat.toHit,
           toDmg: theMat.toDmg,
           armor: 0,
-          die: theWeapon.die,
+          die:     theItem.die,
           stats: _.clone(theMat.stats)
         };
 
@@ -390,7 +350,7 @@ self.generateItem=function(x,y,whatIsIt){
           //that are capable of being applied to the selected weapon
           suffix=_.sample(
             _.filter(self.suffixes.wSuffixes,function(suf){
-              return suf[theWeapon.type] || suf.all;
+              return suf[theItem.type] || suf.all;
             })
           );
           tmpItem.name+=" of "+suffix.fName;
@@ -399,61 +359,76 @@ self.generateItem=function(x,y,whatIsIt){
       break;
      
       case "armor":
-        for(i in self.materials) if(self.materials[i].level<=WORLD.level+Math.rand(0,1)-1)matArr.push(i);
-        for(i in self.armor) typeArr.push(i);
-        theMat=matArr[Math.rand(0,matArr.length-1)];
-        
-        theType=typeArr[Math.rand(0,typeArr.length-1)];
-        theName=self.materials[theMat].fName+" "+self.armor[theType].fName;
-        uid = self.armor[theType].fName;
-        tmpItem={name:theName,uid:uid,mat:theMat,type:self.armor[theType].type};
-        tmpItem.toHit=0;
-        tmpItem.toDmg=0;
-        tmpItem.armor=self.materials[theMat].armor+self.armor[theType].armor;
-        for(i=0;n<5;n++) statAdd[i]+=self.materials[theMat].stats[i];
-        tmpItem.stats=statAdd;
-        if(!Math.rand(0,750-(WORLD.level*4)-self.materials[theMat].level)){
-          prefix=self.aPre[Math.rand(0,self.aPre.length-1)];
-          tmpItem.name=self.prefixes.aPrefixes[prefix].fName+" "+tmpItem.name;
+        //random material
+        theMat = _.sample(
+          _.filter(self.materials,function(m){
+              return m.level<=WORLD.level-_.random(1);
+          })
+        );
+
+        //choose random armor
+        theItem = _.sample(self.armor);
+
+        tmpItem = {
+          name:  theMat.fName + " " + theItem.fName,
+          uid:   theItem.fName,
+          mat:   _.findKey(self.materials,theMat),
+          type:  theItem.type,
+          toHit: 0,
+          toDmg: 0,
+          armor: theMat.armor+theItem.armor,
+          stats: _.clone(theMat.stats)
+        };
+
+        //prefix buff
+        if(!Math.rand(0,750-(WORLD.level*4)-theMat.level)){
+          tmpItem.name=_.sample(self.prefixes).fName+" "+tmpItem.name;
         }
 
-        if(!Math.rand(0,750-(WORLD.level*4)-self.materials[theMat].level)){
-          suffix=self.aSuf[Math.rand(0,self.aSuf.length-1)];
-          if(self.suffixes.aSuffixes[suffix][tmpItem.type[0]]||self.suffixes.aSuffixes[suffix].all){
-            tmpItem.name+=" of "+self.suffixes.aSuffixes[suffix].fName;
-            //Buy the DLC to finish the if statement  
-          }
+        //suffix buff
+        if(!Math.rand(0,750-(WORLD.level*4)-theMat.level)){
+
+          //choose a random suffix that can be applied to this armor
+          suffix=_.sample(
+            _.filter(self.suffixes.aSuffixes,function(suf){
+              return suf.all || _.has(suf,theItem.type[0]) || _.has(suf,theItem.type[1]);
+            })
+          );
+          tmpItem.name+=" of "+self.suffixes.aSuffixes[suffix].fName;
         }
         
       break;
       
       case "potion":
-        for(i in self.potions) typeArr.push(i);
-        kind=typeArr[Math.rand(0,typeArr.length-1)];
-        theType=["potion",kind];
-        theName="Potion of "+self.potions[kind];
-        tmpItem={name:theName,uid:"Potion",type:theType};
+        kind=_.sample(_.keys(self.potions));
+        tmpItem={
+          name: "Potion of "+self.potions[kind],
+          uid:  "Potion",
+          type: ["potion",kind]
+        };
       break;
       
       case "amulet":
-        for(i in self.amulets) typeArr.push(i);
-        kind=typeArr[Math.rand(0,typeArr.length-1)];
-        theType=["amulet",kind];
-        theName="Amulet of "+self.amulets[kind].name;
-        armor=self.amulets[kind].armor;
-        statAdd=self.amulets[kind].stats;
-        regen=self.amulets[kind].regen;
-        tmpItem={name:theName,uid:"Amulet",type:theType,armor:armor,stats:statAdd,regen:regen};
+        theItem = _.sample(self.amulets);
+        tmpItem={
+          name:  "Amulet of "+theItem.name,
+          uid:   "Amulet",
+          type:  ["amulet",_.findKey(self.amulets,theItem)],
+          armor: theItem.armor,
+          stats: _.clone(theItem.stats),
+          regen: theItem.regen
+        };
       break;
       
        case "cloak":
-        for(i in self.cloaks) typeArr.push(i);
-        kind=typeArr[Math.rand(0,typeArr.length-1)];
-        theType=["cloak",kind];
-        theName="Cloak of "+self.cloaks[kind].name;
-        armor=self.cloaks[kind].armor;
-        statAdd=self.cloaks[kind].stats;
-        tmpItem={name:theName,uid:"Cloak",type:theType,armor:armor,stats:statAdd};
+        theItem=_.sample(self.cloaks);
+        tmpItem={
+          name:  "Cloak of "+theItem.name,
+          uid:   "Cloak",
+          type:  ["cloak",_.findKey(self.cloaks,theItem)],
+          armor: theItem.armor,
+          stats: _.clone(theItem.stats)
+        };
       break;
 
       case "scroll":
