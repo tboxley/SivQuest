@@ -232,16 +232,29 @@ var ENTITY = new function(){
 
   self.updateLOS=function(){
     SCREEN.mobsSee=[];
-    var i,x,y,square;
+    var i,x,y,square,distanceFromPC,visibility;
     PC.LOS=3;
     if(!WORLD.level) PC.LOS=7;
     else if(WORLD.inRoom(PC.X,PC.Y)) PC.LOS=3;
     else PC.LOS=4;
-    for(x=PC.X-PC.LOS;x<=PC.X+PC.LOS;x++) {
+    for(x=PC.X-PC.LOS;x<=PC.X+PC.LOS+1;x++) {
       for(y=PC.Y-PC.LOS;y<=PC.Y+PC.LOS;y++) {
+        
+        var distanceFromPC = Math.sqrt(Math.pow(PC.X-x,2)+Math.pow(PC.Y-y,2));
+
+        //LOS is now a circle!
+        if(distanceFromPC>=PC.LOS) continue;
+
         square=WORLD.getTile(x,y);
-        if(WORLD.getTile(PC.X,PC.Y).door) square.seen=1;
-        else if(WORLD.inRoom(PC.X,PC.Y)==WORLD.inRoom(x,y)||((square.tile=='wall'||square.door)&&!WORLD.inRoom(PC.X,PC.Y))) square.seen=1;
+
+        if(distanceFromPC>PC.LOS-1) {
+          visibility = Math.max(square.seen,1-Math.floor(PC.LOS/PC.LOS)/PC.LOS);
+        } else {
+          visibility = 1;
+        }
+
+        if(WORLD.getTile(PC.X,PC.Y).door) square.seen=visibility;
+        else if(WORLD.inRoom(PC.X,PC.Y)==WORLD.inRoom(x,y)||((square.tile=='wall'||square.door)&&!WORLD.inRoom(PC.X,PC.Y))) square.seen=visibility;
         for(i=0;i<mobs.length;i++){
           if(mobs[i].X==x&&mobs[i].Y==y&&WORLD.inRoom(mobs[i].X,mobs[i].Y)==WORLD.inRoom(PC.X,PC.Y)) SCREEN.mobsSee.push(i);
         }

@@ -8,7 +8,15 @@ SCREEN = new function(){
 
 
   loadImages=function(){
-    $.getJSON("json/images.php").success(function(data){
+    $.getJSON("json/images.php")
+    .fail(function(){
+      var imgs = ["blank","cDoor","dStairs","fireTrap","floor1","grass","item","items","missing","oDoor","sand","shadow","sidebar","topbar","trap","tree","uStairs","wall","water","white","wizard"];
+      for(var i=0;i<imgs.length;i++){
+        tiles[imgs[i]]=new Image();
+        tiles[imgs[i]].src='img/'+imgs[i]+'.png';
+      }
+    })
+    .success(function(data){
       var imgs = data['imgs'];
       for(var i=0;i<imgs.length;i++){
         tiles[imgs[i]]=new Image();
@@ -39,10 +47,10 @@ SCREEN = new function(){
     });
   };
   
-  self.colorOverlay=function(x,y,color){
+  self.colorOverlay=function(x,y,color,alpha){
     if(color=='rand') color=WORLD.colors[Math.rand(0,WORLD.colors.length-1)];
     ctx.fillStyle=color;
-    ctx.globalAlpha=0.25;
+    ctx.globalAlpha=alpha||0.25;
     ctx.fillRect((x-1)*48,(y-1)*48,48,48);
     ctx.globalAlpha=1;
   };
@@ -108,22 +116,21 @@ SCREEN = new function(){
     for(x = camera.x-10;x<=camera.x+10;x++){
       for(y = camera.y-6;y<=camera.y+6;y++){
         square=WORLD.getTile(x,y);
-        if(!square.seen) drawTile('blank',tmpx,tmpy);
-        else {
-          if(square.tile) drawTile(square.tile,tmpx,tmpy);
-          if(square.color) self.colorOverlay(tmpx,tmpy,square.color);
-          if(square.stairs) drawTile(square.stairs+'Stairs',tmpx,tmpy);
-          if(ITEM.itemCount(x,y)>1) drawTile('items',tmpx,tmpy);
-          if(ITEM.itemCount(x,y)==1) drawTile('item',tmpx,tmpy);
-          if(square.trapSeen) drawTile(square.trap+'Trap',tmpx,tmpy);
-          if(square.door) drawTile(square.door+'Door',tmpx,tmpy);
-          if(PC.X==x&&PC.Y==y) drawTile('wizard',tmpx,tmpy);
-          for(i=0;i<self.mobsSee.length;i++){
-            see=self.mobsSee[i];
-            if(mobs[see].X==x&&mobs[see].Y==y&&!mobs[see].invis) drawTile('trap',tmpx,tmpy);
-          }
-          if(square.overlay) drawTile(square.overlay,tmpx,tmpy);
+
+        if(square.tile) drawTile(square.tile,tmpx,tmpy);
+        if(square.color) self.colorOverlay(tmpx,tmpy,square.color);
+        if(square.stairs) drawTile(square.stairs+'Stairs',tmpx,tmpy);
+        if(ITEM.itemCount(x,y)>1) drawTile('items',tmpx,tmpy);
+        if(ITEM.itemCount(x,y)==1) drawTile('item',tmpx,tmpy);
+        if(square.trapSeen) drawTile(square.trap+'Trap',tmpx,tmpy);
+        if(square.door) drawTile(square.door+'Door',tmpx,tmpy);
+        if(PC.X==x&&PC.Y==y) drawTile('wizard',tmpx,tmpy);
+        for(i=0;i<self.mobsSee.length;i++){
+          see=self.mobsSee[i];
+          if(mobs[see].X==x&&mobs[see].Y==y&&!mobs[see].invis) drawTile('trap',tmpx,tmpy);
         }
+        if(square.overlay) drawTile(square.overlay,tmpx,tmpy);
+        if(square.seen!=1) self.colorOverlay(tmpx,tmpy,'#000',1-square.seen);
         
         tmpy++;
       }
