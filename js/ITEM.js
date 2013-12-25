@@ -72,16 +72,15 @@ var ITEM = new function(){
     ][self.sort];
 
     //this will be hard to wrap your head around, but I'll comment it
-    self.sortArray = _.chain(PC.items)                       //first we start with a list of item IDs
-      .filter(function(itemID){                              //we filter them:
-        return _.any(items[itemID].type, function(type){     //if any of the types listed in the item
-            return _.contains(filterType,type);              //is contained in our filterType search
-          });                                                //it will be included in the final search result
-      })
-      .value(); //grabs the final result (a list of item IDs matching our search criteria)
+    self.sortArray = _.filter(PC.items,                        //First we start with a list of ITEM IDs,
+        function(itemID){                                      //we filter them:
+          return _.any(items[itemID].type, function(type){     //if any of the types listed in the item
+              return _.contains(filterType,type);              //is contained in our filterType search
+            });                                                //it will be included in the final search result
+        }); //returns the final result (a list of item IDs matching our search criteria)
   };
   
-  self.itemId=function(x,y){
+self.itemId=function(x,y){
   if(!x) x = PC.X;
   if(!y) y = PC.Y;
   return WORLD.getTile(x,y).items;
