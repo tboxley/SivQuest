@@ -72,7 +72,7 @@ var ITEM = new function(){
     ][self.sort];
 
     //this will be hard to wrap your head around, but I'll comment it
-    self.sortArray = _.chain(PC.items)                       //first we start with a list of ID names
+    self.sortArray = _.chain(PC.items)                       //first we start with a list of item IDs
       .filter(function(itemID){                              //we filter them:
         return _.any(items[itemID].type, function(type){     //if any of the types listed in the item
             return _.contains(filterType,type);              //is contained in our filterType search
