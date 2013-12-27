@@ -337,18 +337,11 @@ self.generateItem=function(x,y,z){
   if(z) whatIsIt=z;
   else whatIsIt=self.types[Math.rand(0,self.types.length-1)];
   
-    if(!Math.rand(0,1600-(WORLD.level*4))&&self.artifactList.length&&!z){
+    if(Math.rand(0,1600-(WORLD.level*4))&&self.artifactList.length&&!z){
       console.log("RELIC");
       randArt=Math.rand(0,self.artifactList.length-1);
       tmpItem=self.artifacts[self.artifactList[randArt]];
-      delete self.artifactList[randArt];
-      theMat=self.artifactList;
-      self.artifactList=[];
-      for(i in theMat){
-        self.artifactList.push(theMat[i]);
-      }
-
-      
+      self.artifactList.splice(randArt,1);
     }
     
     else switch(whatIsIt){
