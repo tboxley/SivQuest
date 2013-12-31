@@ -205,7 +205,7 @@ self.unequipItem=function(){
 
 
 self.equipItem=function(){
-  var artifact,type,PCInfo=profs[PC.prof],success=0,part,msg="You",i;
+  var artifact,type,PCInfo=SETUP.professions[PC.prof],success=0,part,msg="You",i;
     type=items[self.sortArray[curPos]].type;
     artifact=items[self.sortArray[curPos]].artifact;
     switch(type[0]){
