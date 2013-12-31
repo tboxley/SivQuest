@@ -318,9 +318,9 @@ self.pickUpItem=function(x){
 
 self.generateInitialItems=function(){
   var randx,randy,x;
-  for(x = 1;x<=Math.rand(30,50);x++){
-    randx=Math.rand(1,WORLD.width);
-    randy=Math.rand(1,WORLD.height);
+  for(x = 1;x<=_.random(30,50);x++){
+    randx=_.random(1,WORLD.width);
+    randy=_.random(1,WORLD.height);
     if(WORLD.inRoom(randx,randy)&&WORLD.getTile(randx,randy).type=="floor"&&!WORLD.getTile(randx,randy).door) self.generateItem(randx,randy);
   }
 };
@@ -332,9 +332,9 @@ self.drinkPotion=function(){
 self.generateItem=function(x,y,z){
   var matArr=[],typeArr=[],theMat,theName="",theType,uid,randArt,whatIsIt,statAdd=[0,0,0,0,0],regen,kind,armor=0,i,tmpItem,prefix,suffix;
   if(z) whatIsIt=z;
-  else whatIsIt=self.types[Math.rand(0,self.types.length-1)];
+  else whatIsIt=self.types[_.random(0,self.types.length-1)];
   
-    if(Math.rand(0,1600-(WORLD.level*4))&&_.size(self.artifacts)&&!z){
+    if(_.random(0,1600-(WORLD.level*4))&&_.size(self.artifacts)&&!z){
       console.log("RELIC");
       tmpItem=_.sample(self.artifacts);
       delete self.artifacts[_.findKey(self.artifacts,tmpItem)];
@@ -342,10 +342,10 @@ self.generateItem=function(x,y,z){
     
     else switch(whatIsIt){
       case "weapon":
-        for(i in self.materials) if(self.materials[i].level<=WORLD.level+Math.rand(0,1)-1)matArr.push(i);
+        for(i in self.materials) if(self.materials[i].level<=WORLD.level+_.random(0,1)-1)matArr.push(i);
         for(i in self.weapons) typeArr.push(i);
-        theMat=matArr[Math.rand(0,matArr.length-1)];
-        theType=typeArr[Math.rand(0,typeArr.length-1)];
+        theMat=matArr[_.random(0,matArr.length-1)];
+        theType=typeArr[_.random(0,typeArr.length-1)];
         theName=self.materials[theMat].fName+" "+self.weapons[theType].fName;
         uid = self.weapons[theType].fName;
         tmpItem={name:theName,uid:uid,mat:theMat,type:self.weapons[theType].type};
@@ -355,13 +355,13 @@ self.generateItem=function(x,y,z){
         tmpItem.die=self.weapons[theType].die;
         for(var n=0;n<5;n++) statAdd[n]+=self.materials[theMat].stats[n];
         tmpItem.stats=statAdd;
-        if(!Math.rand(0,750-(WORLD.level*4)-self.materials[theMat].level)){
-          prefix=self.wPre[Math.rand(0,self.wPre.length-1)];
+        if(!_.random(0,750-(WORLD.level*4)-self.materials[theMat].level)){
+          prefix=self.wPre[_.random(0,self.wPre.length-1)];
           tmpItem.name=self.prefixes.wPrefixes[prefix].fName+" "+tmpItem.name;
         }
         
-        if(!Math.rand(0,750-(WORLD.level*4)-self.materials[theMat].level)){
-          suffix=self.wSuf[Math.rand(0,self.wSuf.length-1)];
+        if(!_.random(0,750-(WORLD.level*4)-self.materials[theMat].level)){
+          suffix=self.wSuf[_.random(0,self.wSuf.length-1)];
           if(self.suffixes.wSuffixes[suffix][tmpItem.type[1]]||self.suffixes.wSuffixes[suffix].all){
           tmpItem.name+=" of "+self.suffixes.wSuffixes[suffix].fName;
           }
@@ -370,11 +370,11 @@ self.generateItem=function(x,y,z){
       break;
      
       case "armor":
-        for(i in self.materials) if(self.materials[i].level<=WORLD.level+Math.rand(0,1)-1)matArr.push(i);
+        for(i in self.materials) if(self.materials[i].level<=WORLD.level+_.random(0,1)-1)matArr.push(i);
         for(i in self.armor) typeArr.push(i);
-        theMat=matArr[Math.rand(0,matArr.length-1)];
+        theMat=matArr[_.random(0,matArr.length-1)];
         
-        theType=typeArr[Math.rand(0,typeArr.length-1)];
+        theType=typeArr[_.random(0,typeArr.length-1)];
         theName=self.materials[theMat].fName+" "+self.armor[theType].fName;
         uid = self.armor[theType].fName;
         tmpItem={name:theName,uid:uid,mat:theMat,type:self.armor[theType].type};
@@ -383,13 +383,13 @@ self.generateItem=function(x,y,z){
         tmpItem.armor=self.materials[theMat].armor+self.armor[theType].armor;
         for(i=0;n<5;n++) statAdd[i]+=self.materials[theMat].stats[i];
         tmpItem.stats=statAdd;
-        if(!Math.rand(0,750-(WORLD.level*4)-self.materials[theMat].level)){
-          prefix=self.aPre[Math.rand(0,self.aPre.length-1)];
+        if(!_.random(0,750-(WORLD.level*4)-self.materials[theMat].level)){
+          prefix=self.aPre[_.random(0,self.aPre.length-1)];
           tmpItem.name=self.prefixes.aPrefixes[prefix].fName+" "+tmpItem.name;
         }
 
-        if(!Math.rand(0,750-(WORLD.level*4)-self.materials[theMat].level)){
-          suffix=self.aSuf[Math.rand(0,self.aSuf.length-1)];
+        if(!_.random(0,750-(WORLD.level*4)-self.materials[theMat].level)){
+          suffix=self.aSuf[_.random(0,self.aSuf.length-1)];
           if(self.suffixes.aSuffixes[suffix][tmpItem.type[0]]||self.suffixes.aSuffixes[suffix].all){
             tmpItem.name+=" of "+self.suffixes.aSuffixes[suffix].fName;
             //Buy the DLC to finish the if statement  
@@ -400,7 +400,7 @@ self.generateItem=function(x,y,z){
       
       case "potion":
         for(i in self.potions) typeArr.push(i);
-        kind=typeArr[Math.rand(0,typeArr.length-1)];
+        kind=typeArr[_.random(0,typeArr.length-1)];
         theType=["potion",kind];
         theName="Potion of "+self.potions[kind];
         tmpItem={name:theName,uid:"Potion",type:theType};
@@ -408,7 +408,7 @@ self.generateItem=function(x,y,z){
       
       case "amulet":
         for(i in self.amulets) typeArr.push(i);
-        kind=typeArr[Math.rand(0,typeArr.length-1)];
+        kind=typeArr[_.random(0,typeArr.length-1)];
         theType=["amulet",kind];
         theName="Amulet of "+self.amulets[kind].name;
         armor=self.amulets[kind].armor;
@@ -419,7 +419,7 @@ self.generateItem=function(x,y,z){
       
        case "cloak":
         for(i in self.cloaks) typeArr.push(i);
-        kind=typeArr[Math.rand(0,typeArr.length-1)];
+        kind=typeArr[_.random(0,typeArr.length-1)];
         theType=["cloak",kind];
         theName="Cloak of "+self.cloaks[kind].name;
         armor=self.cloaks[kind].armor;

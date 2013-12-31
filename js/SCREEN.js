@@ -48,7 +48,7 @@ SCREEN = new function(){
   };
   
   self.colorOverlay=function(x,y,color,alpha){
-    if(color=='rand') color=WORLD.colors[Math.rand(0,WORLD.colors.length-1)];
+    if(color=='rand') color=WORLD.colors[_.random(0,WORLD.colors.length-1)];
     ctx.fillStyle=color;
     ctx.globalAlpha=alpha||0.25;
     ctx.fillRect((x-1)*48,(y-1)*48,48,48);
