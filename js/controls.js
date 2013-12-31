@@ -128,12 +128,12 @@ $(window).keydown(function(e) {
       case 'left':
         if(!curPos){
           if(pickr>0) pickr--;
-          else pickr = rlist.length-1;
+          else pickr = SETUP.rList.length-1;
         }
       
         else if(curPos==1){
           if(pickp>0) pickp--;
-          else pickp = plist.length-1;
+          else pickp = SETUP.pList.length-1;
         }
       
         else if(curPos==2){
@@ -146,12 +146,12 @@ $(window).keydown(function(e) {
       break;
       case 'right':
         if(!curPos){
-          if(pickr<rlist.length-1) pickr++;
+          if(pickr<SETUP.rList.length-1) pickr++;
           else pickr = 0;
         }
       
         else if(curPos==1){
-          if(pickp<plist.length-1) pickp++;
+          if(pickp<SETUP.pList.length-1) pickp++;
           else pickp = 0;
         }
       

@@ -1,0 +1,5 @@
+{
+  "hm":{"fName":"Human"   ,"hp":1,"str":1,"def":1,"ints":1,"spd":1,"desc":"Boring and standard."},
+  "he":{"fName":"High Elf","hp":-4,"str":-2,"def":-2,"ints":4,"spd":3,"desc":"Noble and quick. High Elven wizards get a bonus to dying."},
+  "dw":{"fName":"Dwarf","hp":2,"str":3,"def":2,"ints":-4,"spd":-3,"desc":"Short and angry."}
+}
