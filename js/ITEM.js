@@ -5,7 +5,6 @@ var ITEM = new function(){
   var self = this;
   self.sort=0;
   self.sortArray=[];
-  self.artifactList=[];
   self.aPre=[];
   self.wPre=[];
   self.aSuf=[];
@@ -15,9 +14,7 @@ var ITEM = new function(){
     
     return $.when(
       $.getJSON(basedir+"json/materials.json",function(moo){self.materials=moo;}),
-      $.getJSON(basedir+"json/artifacts.json").success(function(moo){self.artifacts=moo;}).then(function(){
-        for(var moose in self.artifacts) self.artifactList.push(moose);
-      }),
+      $.getJSON(basedir+"json/artifacts.json").success(function(moo){self.artifacts=moo;}),
       $.getJSON(basedir+"json/cloaks.json",function(moo){self.cloaks=moo;}),
       $.getJSON(basedir+"json/weapons.json",function(moo){self.weapons=moo;}),
       $.getJSON(basedir+"json/armor.json",function(moo){self.armor=moo;}),
@@ -337,11 +334,10 @@ self.generateItem=function(x,y,z){
   if(z) whatIsIt=z;
   else whatIsIt=self.types[Math.rand(0,self.types.length-1)];
   
-    if(Math.rand(0,1600-(WORLD.level*4))&&self.artifactList.length&&!z){
+    if(Math.rand(0,1600-(WORLD.level*4))&&_.size(self.artifacts)&&!z){
       console.log("RELIC");
-      randArt=Math.rand(0,self.artifactList.length-1);
-      tmpItem=self.artifacts[self.artifactList[randArt]];
-      self.artifactList.splice(randArt,1);
+      tmpItem=_.sample(self.artifacts);
+      delete self.artifacts[_.findKey(self.artifacts,tmpItem)];
     }
     
     else switch(whatIsIt){
