@@ -3,6 +3,15 @@
 var SETUP = new function(){
   "use strict";
   var self=this;
+  self.loadJSON=function(){
+    $.getJSON("json/professions.json",function(moo){self.professions=moo;
+      self.pList=_.keys(self.professions);
+    });
+    $.getJSON("json/races.json",function(moo){self.races=moo;
+      self.rList=_.keys(self.races);
+    });
+  }
+  
   self.startGame=function(){
     flags.title=0;
     flags.setup=1;
@@ -20,7 +29,7 @@ var SETUP = new function(){
         PC.equip.body=1;
         PC.equip.weapon=2;
         PC.equip.boots=3;
-        for(var x=1;x<=Math.rand(2,4);x++) ITEM.generateItem(0,0,"potion");
+        for(var x=1;x<=_.random(2,4);x++) ITEM.generateItem(0,0,"potion");
       break;
 
       case "kt":
@@ -53,19 +62,19 @@ var SETUP = new function(){
       items=[];
       PC={
         name:name,
-        prof:plist[pickp],
-        race:rlist[pickr],
+        prof:self.pList[pickp],
+        race:self.rList[pickr],
         items:[],
         sex:picks,
         wet:0,
         poison:0,
         armor:0,
-        money:Math.rand(80,200)+Math.rand(20,50),
-        STR:Math.rand(15,20)+races[rlist[pickr]].str+profs[plist[pickp]].str,
-        DEF:Math.rand(15,20)+races[rlist[pickr]].def+profs[plist[pickp]].def,
-        INT:Math.rand(15,20)+races[rlist[pickr]].ints+profs[plist[pickp]].ints,
-        SPD:Math.rand(15,20)+races[rlist[pickr]].spd+profs[plist[pickp]].spd,
-        MaxHP:Math.rand(20,25)+races[rlist[pickr]].hp+profs[plist[pickp]].hp,
+        money:_.random(80,200)+_.random(20,50),
+        STR:_.random(15,20)+self.races[self.rList[pickr]].str+self.professions[self.pList[pickp]].str,
+        DEF:_.random(15,20)+self.races[self.rList[pickr]].def+self.professions[self.pList[pickp]].def,
+        INT:_.random(15,20)+self.races[self.rList[pickr]].ints+self.professions[self.pList[pickp]].ints,
+        SPD:_.random(15,20)+self.races[self.rList[pickr]].spd+self.professions[self.pList[pickp]].spd,
+        MaxHP:_.random(20,25)+self.races[self.rList[pickr]].hp+self.professions[self.pList[pickp]].hp,
         X:6,
         Y:9,
         tmpStats:[0,0,0,0,0],

@@ -48,7 +48,7 @@ SCREEN = new function(){
   };
   
   self.colorOverlay=function(x,y,color,alpha){
-    if(color=='rand') color=WORLD.colors[Math.rand(0,WORLD.colors.length-1)];
+    if(color=='rand') color=WORLD.colors[_.random(0,WORLD.colors.length-1)];
     ctx.fillStyle=color;
     ctx.globalAlpha=alpha||0.25;
     ctx.fillRect((x-1)*48,(y-1)*48,48,48);
@@ -56,25 +56,25 @@ SCREEN = new function(){
   };
   
   self.setupScreen=function(){
-    var sex=['male','female'],text='',text2='',text3='',text4='',g=['he','she'],h=['him','her'],pInfo=profs[plist[pickp]],eArr=[];
+    var sex=['male','female'],text='',text2='',text3='',text4='',g=['he','she'],h=['him','her'],pInfo=SETUP.professions[SETUP.pList[pickp]],eArr=[];
     if(pInfo.fName=='Bard') eArr.push('Everything.');
     else for(var x in ITEM.desc) if(pInfo[x]) eArr.push(ITEM.desc[x]);
     ctx.fillStyle='black';
     ctx.fillRect(0,0,1280,720);
     helpText("Up/Down => Move Cursor. Left/Right => Change option. Enter => Finish.");
-    writeText("Race:       "+races[rlist[pickr]].fName,150,150);
-    writeText("Profession: "+profs[plist[pickp]].fName,150,170);
+    writeText("Race:       "+SETUP.races[SETUP.rList[pickr]].fName,150,150);
+    writeText("Profession: "+SETUP.professions[SETUP.pList[pickp]].fName,150,170);
     writeText("Sex:        "+sex[picks],150,190);
     writeText(">",135,150+20*curPos);
     if(curPos===0){
-      text = races[rlist[pickr]].desc;
-      text2 = "   Stat changes for this race: HP:"+races[rlist[pickr]].hp+" STR:"+races[rlist[pickr]].str+" DEF:"+races[rlist[pickr]].def+" INT:"+races[rlist[pickr]].ints+" SPD:"+races[rlist[pickr]].spd;
+      text = SETUP.races[SETUP.rList[pickr]].desc;
+      text2 = "   Stat changes for this race: HP:"+SETUP.races[SETUP.rList[pickr]].hp+" STR:"+SETUP.races[SETUP.rList[pickr]].str+" DEF:"+SETUP.races[SETUP.rList[pickr]].def+" INT:"+SETUP.races[SETUP.rList[pickr]].ints+" SPD:"+SETUP.races[SETUP.rList[pickr]].spd;
     }
   
     else if(curPos==1) {
-      text = profs[plist[pickp]].desc.replace("%h",h[picks]);
+      text = SETUP.professions[SETUP.pList[pickp]].desc.replace("%h",h[picks]);
       text = text.replace("%g",g[picks]);
-      text2 = "    Stat changes for this profession: HP:"+profs[plist[pickp]].hp+" STR:"+profs[plist[pickp]].str+" DEF:"+profs[plist[pickp]].def+" INT:"+profs[plist[pickp]].ints+" SPD:"+profs[plist[pickp]].spd;
+      text2 = "    Stat changes for this profession: HP:"+SETUP.professions[SETUP.pList[pickp]].hp+" STR:"+SETUP.professions[SETUP.pList[pickp]].str+" DEF:"+SETUP.professions[SETUP.pList[pickp]].def+" INT:"+SETUP.professions[SETUP.pList[pickp]].ints+" SPD:"+SETUP.professions[SETUP.pList[pickp]].spd;
       text3 = "Can equip: "+eArr.join(', ');
       
     }
@@ -162,7 +162,7 @@ SCREEN = new function(){
     ctx.fillStyle='black';
     ctx.fillRect(1020,12,240,580);
     writeText(PC.name,1024,128-96);
-    writeText("Level "+PC.LV+" "+profs[PC.prof].fName,1024,148-96);
+    writeText("Level "+PC.LV+" "+SETUP.professions[PC.prof].fName,1024,148-96);
     writeText("HP:"+(PC.HP+PC.tmpStats[0])+"/"+(PC.MaxHP+PC.tmpStats[0]),1024,168-96);
     writeText("STR:"+(PC.STR+PC.tmpStats[1]),1024,188-96);
     writeText("DEF:"+(PC.DEF+PC.tmpStats[2]),1024,208-96);

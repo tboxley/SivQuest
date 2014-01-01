@@ -44,8 +44,8 @@ var ENTITY = new function(){
 
   self.spawnMob=function(){
     var randx,randy,i,s,canSpawn=0,mobArr=[],mob,whichMob,theMob;
-    randx=Math.rand(1,WORLD.width);
-    randy=Math.rand(1,WORLD.height);
+    randx=_.random(1,WORLD.width);
+    randy=_.random(1,WORLD.height);
     if(!mobs.length) canSpawn=1;
     else for(i=0;i<mobs.length;i++){
       if((mobs[i].X==randx&&mobs[i].Y==randy)||(PC.X==randx&&PC.Y==randy)) {
@@ -57,15 +57,15 @@ var ENTITY = new function(){
     }
     if(canSpawn){
       for(i in self.monsters){
-        if(self.monsters[i].level<=WORLD.level+PC.LV+Math.rand(-2,1)) mobArr.push(i);
+        if(self.monsters[i].level<=WORLD.level+PC.LV+_.random(-2,1)) mobArr.push(i);
       }
       
       if(!mobArr.length) return;
       else{
-        whichMob=mobArr[Math.rand(0,mobArr.length-1)];
+        whichMob=mobArr[_.random(0,mobArr.length-1)];
         theMob=self.monsters[whichMob];
         mob={HP:0,STR:0,DEF:0,SPD:0,INT:0,armor:0};
-        for(s in mob) for(i=0;i<theMob[s][0];i++) mob[s]+=Math.rand(1,theMob[s][1])+WORLD.level+Math.rand(1,2);
+        for(s in mob) for(i=0;i<theMob[s][0];i++) mob[s]+=_.random(1,theMob[s][1])+WORLD.level+_.random(1,2);
         mob.name=theMob.name;
         mob.X=randx;
         mob.Y=randy;
@@ -94,9 +94,9 @@ var ENTITY = new function(){
 
     if(!mobs[m].hostile) mobs[m].hostile=1;
 
-    hit=Math.rand(1,20)+toHit;
+    hit=_.random(1,20)+toHit;
     for(i=0;i<dice[0];i++){
-      dmg+=Math.rand(1,dice[1])+(Math.floor((PC.STR-10)/2));
+      dmg+=_.random(1,dice[1])+(Math.floor((PC.STR-10)/2));
     }
     dmg-=mobs[m].DEF;
     if(dmg<1) SCREEN.gameMessage('You attack the '+mobs[m].name+' but do no damage.');
@@ -150,12 +150,12 @@ var ENTITY = new function(){
     }
    
     else{
-      tmpx=mobs[m].X+Math.rand(-1,1);
-      tmpy=mobs[m].Y+Math.rand(-1,1);
+      tmpx=mobs[m].X+_.random(-1,1);
+      tmpy=mobs[m].Y+_.random(-1,1);
       check=self.checkTile(tmpx,tmpy);
       if(tmpx==PC.X&&tmpy==PC.Y) check[0]=0;
     
-      if(ITEM.itemCount(mobs[m].X,mobs[m].Y)&&!Math.rand(0,25)) {
+      if(ITEM.itemCount(mobs[m].X,mobs[m].Y)&&!_.random(0,25)) {
         console.log(m+'pickup');
         ITEM.mobPickUp(m);
       }
@@ -288,8 +288,8 @@ var ENTITY = new function(){
     square=WORLD.getTile(ent.X,ent.Y);
     switch(square.type){
       case 'water':
-        if(!ent.wet) ent.wet=Math.rand(8,24);
-        else ent.wet+=Math.rand(2,8);
+        if(!ent.wet) ent.wet=_.random(8,24);
+        else ent.wet+=_.random(2,8);
       break;
     }
     
