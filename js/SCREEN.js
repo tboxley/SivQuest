@@ -226,10 +226,10 @@ SCREEN = new function(){
     else{
       if(ITEM.sortArray.length){
         for(var x =0;x<=24;x++){
-          if(ITEM.sortArray[x]>=0) {
+          if(ITEM.sortArray[x]) {
             if(curPos<25) num=x;
             else num=x+(curPos-24);
-            writeText(ITEM.itemName(ITEM.sortArray[num]),96,104+iPos*18);
+            writeText(ITEM.itemName(_.findKey(items,ITEM.sortArray[num])),96,104+iPos*18);
           }
           iPos++;
         }

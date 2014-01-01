@@ -66,59 +66,26 @@ var ITEM = new function(){
     }
   };
 
-  self.itemSorter=function(x){
-    var part;
-    self.sortArray=[];
-    switch(self.sort){
-      case 1:
-        part=["head"];
-      break;
-  
-      case 2:
-        part=["amulet"];
-      break;
-  
-      case 3:
-        part=["cloak"];
-      break;
+  self.itemSorter=function(){
+    var filterType=[
+      null,
+      ["head"],
+      ["amulet"],
+      ["cloak"],
+      ["armor"],
+      ["1hand","2hand"],
+      ["shield"],
+      ["bracers"],
+      ["gauntlets"],
+      ["boots"],
+      ["potion"],
+      ["scroll"]
+    ][self.sort];
     
-      case 4:
-        part=["armor"];
-      break;
-    
-      case 5:
-        part=["1hand","2hand"];
-      break;
-    
-      case 6:
-        part=["shield"];
-      break;
-
-      case 7:
-        part=["bracers"];
-      break;
-
-      case 8:
-        part=["gauntlets"];
-      break;
-  
-      case 9:
-        part=["boots"];
-      break;
-    
-      case 10:
-        part=["potion"];
-      break;
-
-      case 11:
-        part=["scroll"];
-      break;
-    }
-    
-    for(x=0;x<PC.items.length;x++){
-      if(items[PC.items[x]].type[0]==part[0]) self.sortArray.push(PC.items[x]);
-      if(part.length==2&&items[PC.items[x]].type[0]==part[1]) self.sortArray.push(PC.items[x]);
-    }
+    self.sortArray= _.chain(PC.items)
+                      .map(function(id){return items[id];})
+                      .where({type:filterType})
+                    .value();
   };
   
   self.itemId=function(x,y){
@@ -206,8 +173,8 @@ self.unequipItem=function(){
 
 self.equipItem=function(){
   var artifact,type,PCInfo=SETUP.professions[PC.prof],success=0,part,msg="You",i;
-    type=items[self.sortArray[curPos]].type;
-    artifact=items[self.sortArray[curPos]].artifact;
+    type=self.sortArray[curPos].type;
+    artifact=self.sortArray[curPos].artifact;
     switch(type[0]){
       default:
         msg+=" cannot equip that item.";
@@ -258,11 +225,11 @@ self.equipItem=function(){
         PC.items.push(PC.equip[part]);
         msg+=" unequip the "+ITEM.itemName(PC.equip[part])+" and";
       }
-      PC.equip[part]=self.sortArray[curPos];
-      items[self.sortArray[curPos]].equip=1;
-      items[self.sortArray[curPos]].owned=0;
-      items[self.sortArray[curPos]].idd=1;
-      for(i=0;i<PC.items.length;i++) if(PC.items[i]==self.sortArray[curPos]) PC.items.splice(i,1);
+      PC.equip[part]=_.findKey(items,self.sortArray[curPos]);
+      self.sortArray[curPos].equip=1;
+      self.sortArray[curPos].owned=0;
+      self.sortArray[curPos].idd=1;
+      for(i=0;i<PC.items.length;i++) if(items[PC.items[i]]==self.sortArray[curPos]) PC.items.splice(i,1);
       msg+=" equip the "+ITEM.itemName(PC.equip[part])+".";
       self.sort=0;
       curPos=lastPos;
@@ -330,7 +297,7 @@ self.drinkPotion=function(){
 };
 
 self.generateItem=function(x,y,z){
-  var matArr=[],typeArr=[],theMat,theName="",theType,uid,randArt,whatIsIt,statAdd=[0,0,0,0,0],regen,kind,armor=0,i,tmpItem,prefix,suffix;
+  var matArr=[],typeArr=[],theMat,theName="",theType,uid,whatIsIt,statAdd=[0,0,0,0,0],regen,kind,armor=0,i,tmpItem,prefix,suffix;
   if(z) whatIsIt=z;
   else whatIsIt=self.types[_.random(0,self.types.length-1)];
   
