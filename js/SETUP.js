@@ -80,7 +80,7 @@ var SETUP = new function(){
         tmpStats:[0,0,0,0,0],
         LV:1,
         XP:0,
-        equip:{head:-1,amulet:-1,cloak:-1,body:-1,weapon:-1,shield:-1,bracers:-1,gauntlets:-1,boots:-1,missile:-1,mWeapon:-1},
+        equip:{head:-1,amulet:-1,cloak:-1,body:-1,weapon:-1,shield:-1,bracers:-1,gauntlets:-1,boots:-1,mWeapon:-1,missile:-1},
         LOS:6,
         Moves:0
       };

@@ -78,6 +78,8 @@ var ITEM = new function(){
       ["bracers"],
       ["gauntlets"],
       ["boots"],
+      ["mWeapon"],
+      ["missile"],
       ["potion"],
       ["scroll"]
     ][self.sort];
@@ -155,6 +157,14 @@ self.unequipItem=function(){
       part="boots";
       msg="footsies lol";
     break;
+    case 9:
+      part="mWeapon";
+      msg="bowlol";
+    break;
+    case 10:
+      part="missile";
+      msg="arrowlol";
+    break;
   }
   if(PC.equip[part]==-1) msg=msg;
     else{
@@ -191,6 +201,8 @@ self.equipItem=function(){
       case "bracers":
       case "boots":
       case "gauntlets":
+      case "mWeapon":
+      case "missile":
         part=type[0];
         success=1;
       break;

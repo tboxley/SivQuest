@@ -192,7 +192,7 @@ $(window).keydown(function(e) {
       break;
       
       case 'down':
-        if(curPos<8) curPos++;
+        if(curPos<10) curPos++;
         SCREEN.equipMenu();
       break;
       case 'esc':

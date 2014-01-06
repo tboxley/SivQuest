@@ -220,6 +220,8 @@ SCREEN = new function(){
       writeText('Bracers:        '+ITEM.itemName(PC.equip.bracers),80,224);
       writeText('Gauntlets:      '+ITEM.itemName(PC.equip.gauntlets),80,244);
       writeText('Boots:          '+ITEM.itemName(PC.equip.boots),80,264);
+      writeText('Missile Weapon: '+ITEM.itemName(PC.equip.mWeapon),80,284);
+      writeText('Missiles:       '+ITEM.itemName(PC.equip.missile),80,304);
       writeText('>',60,104+20*curPos);
       helpText("E/Esc => close. Enter/Space => select. I => Inventory. U => Unequip");
     }
