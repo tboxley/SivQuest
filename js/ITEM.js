@@ -32,7 +32,7 @@ var ITEM = new function(){
     );
   };
   self.types=["weapon","potion","amulet","cloak","armor"];
-  self.desc={dagger:"Daggers",sword:"Swords",shield:"Shields",staff:"Staves",wand:"Wands",heavy:"Heavy Armor",medium:"Medium Armor",light:"Light Armor",axe:"Axes",polearm:"Polearms"};
+  self.desc={dagger:"Daggers",sword:"Swords",shield:"Shields",staff:"Staves",magic:"Magic Weapons",heavy:"Heavy Armor",medium:"Medium Armor",light:"Light Armor",axe:"Axes",polearm:"Polearms"};
   
   self.resetBoardItems=function(x,y){
     var tmpArr=[],n=0;
@@ -52,7 +52,8 @@ var ITEM = new function(){
     }
     else{
       var item=items[WORLD.getTile(x,y).items[0]];
-      if(!item.idd){
+      if(item.name=='gold') return("You see "+item.count+" coins lying here.");
+      else if(!item.idd){
         if(item.uid.match(/^[aeiou]/i)) aAn="an";
         else aAn="a";
         return("You see "+aAn+" "+item.uid+" on the ground.");
@@ -224,7 +225,7 @@ self.equipItem=function(){
       
       case "shield":
         part="shield";
-        if(PC.equip.weapon!=-1&&items[PC.equip.weapon].type[0]=='2hand') msg+=" cannot equip a shiled whilst wielding a two-handed weapon.";
+        if(PC.equip.weapon!=-1&&items[PC.equip.weapon].type[0]=='2hand') msg+=" cannot equip a shield whilst wielding a two-handed weapon.";
         else if(PCInfo.shield||artifact) success=1;
         else msg+="r profession cannot equip shields.";
       break;

@@ -82,11 +82,13 @@ var SETUP = new function(){
         XP:0,
         equip:{head:-1,amulet:-1,cloak:-1,body:-1,weapon:-1,shield:-1,bracers:-1,gauntlets:-1,boots:-1,mWeapon:-1,missile:-1},
         LOS:6,
+        powers:[],
         Moves:0
       };
       PC.MaxHP+=PC.DEF-10;
       PC.HP=PC.MaxHP;
       self.startingItems();
+      ENTITY.grantPower();
       ENTITY.updateArmor();
       flags.setup=0;
       WORLD.level=0;

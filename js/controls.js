@@ -263,8 +263,7 @@ $(window).keydown(function(e) {
       break;
       
       case 'c':
-        flags.camera=Math.abs(flags.camera-1);
-        SCREEN.redrawBoard();
+
       break;
 
       case 'e':
@@ -274,6 +273,10 @@ $(window).keydown(function(e) {
         flags.equip=1;
       break;
       
+      case 'f':
+        
+      break;
+
       case 'h':
         SCREEN.helpMenu();
         flags.help=1;

@@ -7,12 +7,20 @@ var ENTITY = new function(){
   
   self.loadJSON=function(){
     $.getJSON("json/monsters.json",function(moo){self.monsters=moo;});
+    $.getJSON("json/powers.json",function(moo){self.powers=moo;});
   };
 
-
+  self.grantPower=function(){
+    var powers=ENTITY.powers[PC.prof],powList=[];
+    for(var i in powers){
+      if(powers[i].level==PC.LV) powList.push(i);
+    }
+    if(_.size(powList)) PC.powers.push(_.sample(powList));
+  };
+  
   self.activateTrap/*Card*/=function(e){
-    var square,ent;
-    if(!ent) ent=PC;
+    var square,ent,msg;
+    if(e==-1) ent=PC;
     else ent=mobs[e];
     square=WORLD.getTile(ent.X,ent.Y);
     switch(square.trap){
@@ -30,6 +38,8 @@ var ENTITY = new function(){
       break;
 
       case 'spike':
+        ent.HP-=_.random(1,16);
+        msg='spiketrapped';
       break;
 
       case 'snake':
@@ -40,6 +50,7 @@ var ENTITY = new function(){
       break;
 
     }
+    if(!e) SCREEN.gameMessage(msg);
   };
 
   self.spawnMob=function(){
