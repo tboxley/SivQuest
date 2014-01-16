@@ -165,7 +165,9 @@ $(window).keydown(function(e) {
       break;
 
     }
-    
+    var pcheck=SETUP.professions[SETUP.pList[pickp]].sex;
+    if(pcheck=='m') picks=0;
+    else if(pcheck=='f') picks=1;
     if(flags.setup) SCREEN.setupScreen();
   }
   else if(flags.equip){

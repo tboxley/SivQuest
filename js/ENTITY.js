@@ -277,7 +277,7 @@ var ENTITY = new function(){
   self.updateArmor=function(){
     var x,y;
     PC.armor=0;
-    PC.tmpStats=[0,0,0,0,0];
+    PC.tmpStats=[0,0,0,0,0,0];
     PC.regen=0;
     for(x in PC.equip){
       if(PC.equip[x]>=0){
@@ -316,5 +316,10 @@ var ENTITY = new function(){
     }
     if(PC.wet&&c[4]!='water') PC.wet--;
     if(ITEM.itemCount(PC.X,PC.Y)) SCREEN.gameMessage(ITEM.itemName(PC.X,PC.Y));
+    if(PC.prof=='pmmm'){
+      PC.MP--;
+      if(!PC.MP) alert('ded');
+    }
+
   };
 };

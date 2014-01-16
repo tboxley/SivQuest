@@ -68,12 +68,12 @@ SCREEN = new function(){
     writeText(">",135,150+20*curPos);
     if(curPos===0){
       text = SETUP.races[SETUP.rList[pickr]].desc;
-      text2 = "   Stat changes for this race: HP:"+SETUP.races[SETUP.rList[pickr]].hp+" STR:"+SETUP.races[SETUP.rList[pickr]].str+" DEF:"+SETUP.races[SETUP.rList[pickr]].def+" INT:"+SETUP.races[SETUP.rList[pickr]].ints+" SPD:"+SETUP.races[SETUP.rList[pickr]].spd;
+      text2 = "   Stat changes for this race: HP:"+SETUP.races[SETUP.rList[pickr]].hp+" MP:"+SETUP.races[SETUP.rList[pickr]].mp+" STR:"+SETUP.races[SETUP.rList[pickr]].str+" DEF:"+SETUP.races[SETUP.rList[pickr]].def+" INT:"+SETUP.races[SETUP.rList[pickr]].ints+" SPD:"+SETUP.races[SETUP.rList[pickr]].spd;
     }
   
     else if(curPos==1) {
       text = SETUP.professions[SETUP.pList[pickp]][sex[picks]+'Desc'];
-      text2 = "    Stat changes for this profession: HP:"+SETUP.professions[SETUP.pList[pickp]].hp+" STR:"+SETUP.professions[SETUP.pList[pickp]].str+" DEF:"+SETUP.professions[SETUP.pList[pickp]].def+" INT:"+SETUP.professions[SETUP.pList[pickp]].ints+" SPD:"+SETUP.professions[SETUP.pList[pickp]].spd;
+      text2 = "    Stat changes for this profession: HP:"+SETUP.professions[SETUP.pList[pickp]].hp+" MP:"+SETUP.professions[SETUP.pList[pickp]].mp+" STR:"+SETUP.professions[SETUP.pList[pickp]].str+" DEF:"+SETUP.professions[SETUP.pList[pickp]].def+" INT:"+SETUP.professions[SETUP.pList[pickp]].ints+" SPD:"+SETUP.professions[SETUP.pList[pickp]].spd;
       text3 = "Can equip: "+eArr.join(', ');
       
     }
@@ -162,14 +162,17 @@ SCREEN = new function(){
     ctx.fillRect(1020,12,240,580);
     writeText(PC.name,1024,128-96);
     writeText("Lvl "+PC.LV+" "+SETUP.professions[PC.prof].fName,1024,148-96);
-    writeText("HP:"+(PC.HP+PC.tmpStats[0])+"/"+(PC.MaxHP+PC.tmpStats[0]),1024,168-96);
-    writeText("STR:"+(PC.STR+PC.tmpStats[1]),1024,188-96);
-    writeText("DEF:"+(PC.DEF+PC.tmpStats[2]),1024,208-96);
-    writeText("SPD:"+(PC.SPD+PC.tmpStats[3]),1024,228-96);
-    writeText("INT:"+(PC.INT+PC.tmpStats[4]),1024,248-96);
-    writeText("Gold:"+PC.money,1024,268-96);
-    writeText("Armor Rating:"+PC.armor,1024,288-96);
-    if(PC.wet) writeText("Wet",1024,288-56,'blue');
+    writeText("HP:"+PC.HP+"/"+(PC.MaxHP+PC.tmpStats[0]),1024,168-96);
+    writeText("MP:"+PC.MP+"/"+(PC.MaxMP+PC.tmpStats[1]),1024,188-96);
+    writeText("STR:"+(PC.STR+PC.tmpStats[2]),1024,208-96);
+    writeText("DEF:"+(PC.DEF+PC.tmpStats[3]),1024,228-96);
+    writeText("SPD:"+(PC.SPD+PC.tmpStats[4]),1024,248-96);
+    writeText("INT:"+(PC.INT+PC.tmpStats[5]),1024,268-96);
+    writeText("Gold:"+PC.money,1024,288-96);
+    writeText("Armor Rating:"+PC.armor,1024,308-96);
+    if(PC.wet) writeText(" Wet",1024,288-56,'blue');
+    if(PC.burning) writeText(" On fire!",1024,288-56,'red');
+    if(PC.poison) writeText("          Poisoned!",1024,288-56,'purple');
   };
   
   blankScreen=function(){

@@ -1,4 +1,4 @@
 {
-  "kt":{"fName":"Knight","hp":7,"str":4,"def":4,"ints":-3,"spd":-5,"staff":0,"dagger":1,"sword":1,"shield":1,"magic":0,"axe":1,"light":0,"medium":1,"heavy":1,"maleDesc":"A knight with armor and stuff. May sink like a stone.","femaleDesc":"FTEST"},
-    "pmmm":{"fName":"Magical Girl","hp":7,"str":4,"def":4,"ints":-3,"spd":-5,"staff":0,"dagger":0,"sword":0,"shield":0,"magic":1,"axe":0,"light":0,"medium":0,"heavy":0,"maleDesc":"I'm Sailor Dude, and I'm gonna get you!","femaleDesc":"I want you to make a contract me and become a magical girl! ／人◕ ‿‿ ◕人＼"}
+  "kt":{"fName":"Knight","hp":10,"mp":-8,"str":4,"def":4,"ints":-3,"spd":-5,"staff":0,"dagger":1,"sword":1,"shield":1,"magic":0,"axe":1,"light":0,"medium":1,"heavy":1,"maleDesc":"A knight with armor and stuff. May sink like a stone.","femaleDesc":"FTEST","sex":"u"},
+  "pmmm":{"fName":"Magical Girl","hp":5,"mp":120,"str":1,"def":0,"ints":11,"spd":5,"staff":0,"dagger":0,"sword":0,"shield":0,"magic":1,"axe":0,"light":0,"medium":0,"heavy":0,"maleDesc":"","femaleDesc":"I want you to make a contract me and become a magical girl! ／人◕ ‿‿ ◕人＼","sex":"f"}
 }
