@@ -27,7 +27,7 @@ var ENTITY = new function(){
     if(_.size(powList)) PC.powers.push(_.sample(powList));
   };
   
-  self.activateTrap/*Card*/=function(e){
+  self.activateTrap=function(e){
     var square,ent,msg,dmg=0;
     self.ka=0;
     if(e==-1) ent=PC;

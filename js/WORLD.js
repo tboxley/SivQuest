@@ -28,15 +28,12 @@ var WORLD=new function(){
     boardTiles[x+','+y].door=0;
     if(ti=='grass'&&!_.random(0,25)) boardTiles[x+','+y].overlay='tree';
   };
-  
-  
+ 
    self.getTile=function(x,y){
     if(!boardTiles[x+','+y]||x>self.width||y>self.height) return {type: 'offScreen',items:[],tile:0,trap:0,trapSeen:0,stairs:0,seen:0};
     else return boardTiles[x+','+y];
   };
   
-
-
   self.generateBoard=function(){
     var x,y,rooms=self.rooms;
     boardTiles={};
@@ -68,7 +65,6 @@ var WORLD=new function(){
         for(y=1;y<=self.height;y++){
           if(x==1||y==1||x==self.width||y==self.height) self.setTile(x,y,'wall');
           else self.setTile(x,y,'floor','floor1');
-
         }
       }
       makeRooms();
