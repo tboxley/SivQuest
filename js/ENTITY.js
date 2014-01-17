@@ -145,6 +145,7 @@ var ENTITY = new function(){
         mob.X=randx;
         mob.Y=randy;
         mob.items=[];
+        mob.hostile=0;
         mobs.push(mob);
       }
     }
@@ -184,7 +185,7 @@ var ENTITY = new function(){
 
   self.killMob=function(m){
     //SCREEN.gameMessage('You kill the '+mobs[m].name);
-    mobs.splice(m,1);
+    mobs[m]=0;
   };
   
   self.mobLOS=function(m){
@@ -252,7 +253,7 @@ var ENTITY = new function(){
 
   self.spawnStartingMobs=function(){
     mobs=[];
-    _.times(2,self.spawnMob);
+    _.times(28,self.spawnMob);
   };
   
   self.checkTile=function(x,y){
