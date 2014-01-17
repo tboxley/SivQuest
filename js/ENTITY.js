@@ -4,6 +4,7 @@ var ENTITY = new function(){
   'use strict';
   var self=this;
   self.ka=0;
+  self.waitMobs=[];
   self.loadJSON=function(){
     $.getJSON("json/monsters.json",function(moo){self.monsters=moo;});
     $.getJSON("json/powers.json",function(moo){self.powers=moo;});
@@ -140,7 +141,7 @@ var ENTITY = new function(){
         theMob=self.monsters[whichMob];
         mob={HP:0,STR:0,DEF:0,SPD:0,INT:0,armor:0};
         for(s in mob) for(i=0;i<theMob[s][0];i++) mob[s]+=_.random(1,theMob[s][1])+WORLD.level+_.random(1,2);
-        mob.name=theMob.name;
+        mob.name=theMob.name+mobs.length;
         mob.X=randx;
         mob.Y=randy;
         mob.items=[];
@@ -191,23 +192,24 @@ var ENTITY = new function(){
   };
 
   self.moveEntities=function(x,y){
-    var i,waitMobs=[],check;
+    var i,check;
+    self.waitMobs=[];
     SCREEN.clearMessage();
     check=self.checkTile(PC.X+x,PC.Y+y);
     if(check[5]) self.attackMob(check[5]-1);
     if(check[1]){
       for(i=0;i<mobs.length;i++){
-        if(mobs[i].SPD>PC.SPD) self.moveMob(i);
-        else waitMobs.push(i);
+        if(mobs[i].SPD>PC.SPD) self.moveMob(i,x,y);
+        else self.waitMobs.push(i);
       }
       if(check[0]) self.movePlayer(x,y,check);
-      if(waitMobs.length) for(i=0;i<waitMobs.length;i++) self.moveMob(i);
+      if(self.waitMobs.length) for(i=0;i<self.waitMobs.length;i++) self.moveMob(self.waitMobs[i]);
     }
     else SCREEN.gameMessage(check[3]);
     SCREEN.redrawBoard();
   };
 
-  self.moveMob=function(m){
+  self.moveMob=function(m,px,py){
     var tmpx,tmpy,check,i,x,y,attack=0;
     if(mobs[m].hostile){
       for(x=mobs[m].X-1;x<=mobs[m].X+1;x++){
@@ -220,26 +222,29 @@ var ENTITY = new function(){
       }
     }
     if(attack){
-      console.log('att');
+      
     }
-   
+    
     else{
       tmpx=mobs[m].X+_.random(-1,1);
       tmpy=mobs[m].Y+_.random(-1,1);
-      check=self.checkTile(tmpx,tmpy);
-      if(tmpx==PC.X&&tmpy==PC.Y) check[0]=0;
+      if(tmpx==PC.X+px&&tmpy==PC.Y+py) self.waitMobs.unshift(m);
+      else{
+        check=self.checkTile(tmpx,tmpy);
+        if(tmpx==PC.X&&tmpy==PC.Y) check[0]=0;
     
-      if(ITEM.itemCount(mobs[m].X,mobs[m].Y)&&!_.random(0,25)) {
-        console.log(m+'pickup');
-        ITEM.mobPickUp(m);
-      }
-      else if(check[0]){
-        mobs[m].X=tmpx;
-        mobs[m].Y=tmpy;
-        if(check[2]){
-          self.activateTrap(m);
+        if(ITEM.itemCount(mobs[m].X,mobs[m].Y)&&!_.random(0,25)) {
+          console.log(m+'pickup');
+          ITEM.mobPickUp(m);
         }
-        self.activateSquare(m);
+        else if(check[0]){
+          mobs[m].X=tmpx;
+          mobs[m].Y=tmpy;
+          if(check[2]){
+            self.activateTrap(m);
+          }
+          self.activateSquare(m);
+        }
       }
     }
     if(mobs[m].HP<1) self.killMob(m);
@@ -247,7 +252,7 @@ var ENTITY = new function(){
 
   self.spawnStartingMobs=function(){
     mobs=[];
-    _.times(25,self.spawnMob);
+    _.times(2,self.spawnMob);
   };
   
   self.checkTile=function(x,y){
@@ -288,7 +293,8 @@ var ENTITY = new function(){
 
       case 'water':
         cam=doMove=1;
-        msg='Splish!';
+        if(PC.burning) msg='Pssssshhh.';
+        else msg='Splish!';
       break;
     }
 
@@ -313,7 +319,7 @@ var ENTITY = new function(){
     for(x=PC.X-PC.LOS;x<=PC.X+PC.LOS+1;x++) {
       for(y=PC.Y-PC.LOS;y<=PC.Y+PC.LOS;y++) {
         
-        var distanceFromPC = Math.sqrt(Math.pow(PC.X-x,2)+Math.pow(PC.Y-y,2));
+        distanceFromPC = Math.sqrt(Math.pow(PC.X-x,2)+Math.pow(PC.Y-y,2));
 
         //LOS is now a circle!
         if(distanceFromPC>=PC.LOS) continue;
@@ -361,8 +367,17 @@ var ENTITY = new function(){
     square=WORLD.getTile(ent.X,ent.Y);
     switch(square.type){
       default:
-        if(ent.wet) ent.wet--;
-        else if(ent.wet<1) ent.wet=0;
+        if(ent.wet) {
+          ent.wet--;
+          if(ent.wet<1) ent.wet=0;
+        }
+        if(ent.burning){
+          ent.burning--;
+          ent.HP-=ENTITY.diceRoll(1,4);
+          if(e==-1){
+            self.ka='fire';
+          }
+        }
       break;
       
       case 'water':
@@ -378,14 +393,13 @@ var ENTITY = new function(){
     PC.X+=x;
     PC.Y+=y;
     self.activateSquare(-1);
+    if(PC.HP<1) self.killPlayer(self.ka);
     if(c[3]) SCREEN.gameMessage(c[3]);
     if(c[2]){
       self.activateTrap(-1);
       if(PC.HP<1) self.killPlayer('trap',self.ka);
     }
-    if(PC.burning){
 
-    }
     if(ITEM.itemCount(PC.X,PC.Y)) SCREEN.gameMessage(ITEM.itemName(PC.X,PC.Y));
     
     if(PC.prof=='pmmm'){
@@ -401,6 +415,10 @@ var ENTITY = new function(){
     switch(h){
       default:
         msg=PC.name+' was killed by an unprogrammed death.\nShit happens.';
+      break;
+      
+      case 'fire':
+        msg='Burn, baby, burn! '+PC.name+' inferno.';
       break;
       
       case 'trap':
