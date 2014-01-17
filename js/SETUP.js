@@ -96,6 +96,7 @@ var SETUP = new function(){
       ENTITY.updateArmor();
       flags.setup=0;
       WORLD.level=0;
+      if(PC.prof=='pmmm') SOUNDS.playMusic('test');
       WORLD.generateBoard();
       
     }

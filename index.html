@@ -38,7 +38,8 @@
     
   </head>
   <body>
-       
+    <audio id='music'></audio>
+    <audio id='sfx'></audio>
     <canvas id='canvas' width='1280' height='720'>Get a better browser, you fuck.</canvas>
     <script>
       $.ajaxSetup({
@@ -46,12 +47,13 @@
       });
       $(window).on('load',function(){
         SCREEN.titleScreen();
+        SOUNDS.setupVars();
+        SOUNDS.loadJSON();
         ITEM.loadJSON();
         ENTITY.loadJSON();
         SETUP.loadJSON();
       });
       
     </script>
-    <div id='debug'></div>
   </body>
 </html>
