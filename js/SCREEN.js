@@ -2,7 +2,7 @@
 /*jshint unused:true,supernew:true */
 SCREEN = new function(){
 
-  var tiles=[],camera={},self=this,blankScreen,loadImages,writeText,helpText,drawTile,barDraws=0,gameVersion='PreAlpha 12',ctx;
+  var tiles=[],camera={},self=this,blankScreen,loadImages,writeText,helpText,drawTile,barDraws=0,gameVersion='"It\'s a trap!" Edition.',ctx;
   self.cty=0;
   self.mobsSee=[];
 
