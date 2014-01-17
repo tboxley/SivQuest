@@ -243,26 +243,27 @@ $(window).keydown(function(e) {
     
   }
   
-  else if(flags.read){
+  else if(flags.use){
     SCREEN.clearMessage();
     switch(keys[kc]){
       case 'esc':
-        flags.read=0;
+        flags.use=0;
         SCREEN.redrawBoard();
       break;
       case 'up':
         if(curPos) curPos--;
-        SCREEN.readMenu();
+        SCREEN.useMenu(flags.use);
       break;
 
       case 'down':
         if(curPos<ITEM.sortArray.length-1) curPos++;
-        SCREEN.readMenu();
+        SCREEN.useMenu(flags.use);
       break;
 
       case 'return':
       case 'space':
-        ITEM.readItem();
+        if(flags.use=='r') ITEM.readItem();
+        else if(flags.use=='p') ITEM.drinkPotion();
       break;
     }
   }
@@ -319,18 +320,31 @@ $(window).keydown(function(e) {
         ITEM.pickUpItem(0);
       break;
       
+      case 'q':
+        SCREEN.clearMessage();
+        ITEM.sort=12;
+        ITEM.itemSorter();
+        curPos=0;
+        if(ITEM.sortArray.length){
+          SCREEN.useMenu('p');
+          flags.use='p';
+        }
+        else SCREEN.gameMessage('You have nothing to drink.');
+      break;
+
       case 'r':
         SCREEN.clearMessage();
         ITEM.sort=13;
         ITEM.itemSorter();
         curPos=0;
         if(ITEM.sortArray.length){
-          SCREEN.readMenu();
-          flags.read=1;
+          SCREEN.useMenu('r');
+          flags.use='r';
         }
         else SCREEN.gameMessage('You have nothing to read.');
       break;
       
+
       case 'space':
       case 'return':
         if(WORLD.getTile(PC.X,PC.Y).stairs) WORLD.nextFloor();

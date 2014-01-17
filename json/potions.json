@@ -1,10 +1,10 @@
 {
-  "he":"Healing",
-  "h2o":"Water",
-  "sup":"Invisibility",
-  "he2":"Great Healing",
-  "he3":"Ultra Healing",
-  "he4":"Max Healing",
-  "xp":"Experience",
-  "hic":"Booze"
+  "he":{"name":"Healing","rarity":1},
+  "h2o":{"name":"Water","rarity":1},
+  "sup":{"name":"Invisibility","rarity":1},
+  "he2":{"name":"Great Healing","rarity":1},
+  "he3":{"name":"Ultra Healing","rarity":1},
+  "he4":{"name":"Max Healing","rarity":1},
+  "xp":{"name":"Experience","rarity":1},
+  "hic":{"name":"Booze","rarity":1}
 }

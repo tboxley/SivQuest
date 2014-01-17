@@ -2,7 +2,7 @@
 /*jshint unused:true,supernew:true */
 SCREEN = new function(){
 
-  var tiles=[],camera={},self=this,blankScreen,loadImages,writeText,helpText,drawTile,barDraws=0,gameVersion='LeVar Burton Edition.',ctx;
+  var tiles=[],camera={},self=this,blankScreen,loadImages,writeText,helpText,drawTile,barDraws=0,gameVersion='Severus Snape Edition.',ctx;
   self.cty=0;
   self.mobsSee=[];
 
@@ -265,12 +265,24 @@ SCREEN = new function(){
     else writeText("Nothing else to pick up.",86,200);
   };
   
-  self.readMenu=function(){
+  self.useMenu=function(f){
+    var header,help,msg;
+    if(f=='p'){
+      header="Drinking Menu";
+      msg="What would you like to drink?";
+      help="Drink Potion.";
+
+    }
+    else if(f=='r'){
+      header='Reading Rainbow Menu';
+      msg="What would you like to read?";
+      help="Read Scroll.";
+    }
     iPos=0;
     blankScreen();
-    writeText('Reading Rainbow Menu',460,32);
+    writeText(header,460,32);
     if(ITEM.sortArray.length){
-      self.gameMessage("What would you like to read?");
+      self.gameMessage(msg);
         for(var x =0;x<=24;x++){
           if(ITEM.sortArray[x]) {
             if(curPos<25) num=x;
@@ -284,7 +296,7 @@ SCREEN = new function(){
       else writeText("> ",78,104+24*18);
     }
     else gameMessage('HAX');
-    helpText("Esc => Cancel. Enter/Space/R => Read Scroll.");
+    helpText("Esc => Cancel. Enter/Space => "+help);
     
   };
 };

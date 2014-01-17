@@ -72,19 +72,19 @@ var ITEM = new function(){
     self.sortArray=[];
     var filterType=[
       null,
-      ["head"],
-      ["amulet"],
-      ["cloak"],
-      ["armor"],
-      ["1hand","2hand"],
-      ["shield"],
-      ["bracers"],
-      ["gauntlets"],
-      ["boots"],
-      ["mWeapon"],
-      ["missile"],
-      ["potion"],
-      ["scroll"]
+      "head",
+      "amulet",
+      "cloak",
+      "armor",
+      "hand",
+      "shield",
+      "bracers",
+      "gauntlets",
+      "boots",
+      "mWeapon",
+      "missile",
+      "potion",
+      "scroll"
     ][self.sort];
     
     
@@ -94,7 +94,7 @@ var ITEM = new function(){
                       .map(function(id){
                         return items[id];
                       })
-                      .where({type:filterType})
+                      .filter(function(item){return item.type.join(',').indexOf(filterType)>=0;})
                     .value();
   };
   
@@ -261,13 +261,7 @@ self.equipItem=function(){
 };
 
 self.mobPickUp=function(e){
-  var square=WORLD.getTile(mobs[e].X,mobs[e].Y);
-  mobs[e].items.push(square.items[0]);
-  if(ITEM.itemCount(mobs[e].X,mobs[e].Y)==1) square.items=[];
-  else{
-    square.items[0]=undefined;
-    self.resetBoardItems(mobs[e].X,mobs[e].Y);
-  }
+  //redoing this;
 };
 
 self.pickUpItem=function(x){
@@ -277,7 +271,7 @@ self.pickUpItem=function(x){
   else if(ITEM.itemCount(PC.X,PC.Y)==1){
     theItem=ITEM.itemId(PC.X,PC.Y)[0];
     for(i=0;i<PC.items.length;i++){
-      if(items[theItem].type[0]==items[PC.items[i]].type[0]&&items[theItem].type[1]==items[PC.items[i]].type[1]&&items[theItem].mat==items[PC.items[i]].mat){
+      if(self.compareItems(theItem,PC.items[i])){
         owned=i;
         break;
       }
@@ -306,7 +300,53 @@ self.generateInitialItems=function(){
 };
 
 self.drinkPotion=function(){
-  
+  var success=0,msg;
+  if(ITEM.sortArray[curPos].count<1) SCREEN.gameMessage('Nope.');
+  else switch(ITEM.sortArray[curPos].type[1]){
+    default:
+      SCREEN.gameMessage('Unknown Potion. Stop Cheating.');
+    break;
+    
+    case 'he':
+      PC.HP+=ENTITY.diceRoll(1,8);
+      msg='You feel slightly better.';
+      success=1;
+    break;
+    case 'he2':
+      PC.HP+=ENTITY.diceRoll(1,16);
+      msg='You feel somewhat better.';
+      success=1;
+    break;
+    case 'he3':
+      PC.HP+=ENTITY.diceRoll(2,16);
+      msg='You feel pretty damn good.';
+      success=1;
+    break;
+    case 'he4':
+      PC.HP=PC.MaxHP;
+      msg='You are fully healed!';
+      success=1;
+    break;
+    case 'hic':
+      var booze=['Rum Chata','Jack Daniels','Jägermeister'];
+      msg='You drink some delicious '+_.sample(booze);
+      success=1;
+    break;
+    case 'h2o':
+      msg='Refreshing.';
+      success=1;
+    break;
+    
+
+  }
+  if(success){
+      if(PC.HP>PC.MaxHP) PC.HP=PC.MaxHP;
+      ITEM.sortArray[curPos].count--;
+      flags.use=0;
+      SCREEN.gameMessage(msg);
+      SCREEN.redrawBoard();
+      self.checkItemCount();
+  }  
 };
 
 self.readItem=function(){
@@ -332,7 +372,7 @@ self.readItem=function(){
   }
   if(success){
       ITEM.sortArray[curPos].count--;
-      flags.read=0;
+      flags.use=0;
       SCREEN.gameMessage(msg);
       SCREEN.redrawBoard();
       self.checkItemCount();
@@ -350,7 +390,7 @@ self.generateItem=function(x,y,z){
   if(z) whatIsIt=z;
   else whatIsIt=self.types[_.random(0,self.types.length-1)];
   
-    if(!_.random(1,100-(WORLD.level*4))&&_.size(self.artifacts)&&!z){
+    if(_.random(1,100-(WORLD.level*4))&&_.size(self.artifacts)&&!z){
       console.log("RELIC");
       tmpItem=_.sample(self.artifacts);
       delete self.artifacts[_.findKey(self.artifacts,tmpItem)];
@@ -415,11 +455,14 @@ self.generateItem=function(x,y,z){
       break;
       
       case "potion":
-        for(i in self.potions) typeArr.push(i);
-        kind=typeArr[_.random(0,typeArr.length-1)];
-        theType=["potion",kind];
-        theName="Potion of "+self.potions[kind];
-        tmpItem={name:theName,uid:"Potion",type:theType};
+        success=0;
+        theType=_.sample(_.keys(ITEM.potions));
+        if(ITEM.potions[theType].rarity<=WORLD.level+_.random(-1,1)){
+          theName=ITEM.potions[theType].name;
+          theType=["potion",theType];
+          tmpItem={name:"Potion of "+theName,type:theType,uid:"scroll"};
+          success=1;
+        }
       break;
       
       case "amulet":
@@ -449,7 +492,7 @@ self.generateItem=function(x,y,z){
         if(ITEM.scrolls[theType].rarity<=WORLD.level+_.random(-1,1)){
           theName=ITEM.scrolls[theType].name;
           theType=["scroll",theType];
-          tmpItem={name:"Scroll of "+theName,type:theType,uid:"scroll",count:1};
+          tmpItem={name:"Scroll of "+theName,type:theType,uid:"scroll"};
           success=1;
         }
 
@@ -478,5 +521,10 @@ self.generateItem=function(x,y,z){
   self.setItem=function(x,y,z){
     if(!x||!y) PC.items.unshift(z);
     else WORLD.getTile(x,y).items.unshift(z);
+  };
+  
+  self.compareItems=function(a,b){
+   if(items[a].type[0]==items[b].type[0]&&items[a].type[1]==items[b].type[1]&&items[a].mat==items[b].mat) return true;
+   else return false;
   };
 };
