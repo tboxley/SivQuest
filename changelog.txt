@@ -1,4 +1,1 @@
-The sourcecode for SivQuest is now available on github!
-
-https://github.com/sivart0/SivQuest
-Press 'g' to go there and see the changes.
+See previous commit for changes.
