@@ -1,6 +1,7 @@
 {
   "pmmm":{
-    "he":{"name":"Increased Healing","desc":"+healing","level":1}
+    "he":{"name":"Increased Healing","desc":"Your wish for healing has granted you the ability to heal twice as fast.","level":1}
+
   },
   "kt":{
     "ss":{"name":"Sword Strike","desc":"+healing","level":1}

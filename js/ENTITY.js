@@ -3,11 +3,20 @@
 var ENTITY = new function(){
   'use strict';
   var self=this;
-  
-  
+  self.ka=0;
   self.loadJSON=function(){
     $.getJSON("json/monsters.json",function(moo){self.monsters=moo;});
     $.getJSON("json/powers.json",function(moo){self.powers=moo;});
+  };
+
+  self.diceRoll=function(d,x){
+    //this function is useless
+    var rolls=[],total=0;
+    if(!d) d=1;
+    if(!x) x=20;
+    rolls = _.times(d, _.partial(_.random, 1, x,false));
+    for(var i=0;i<_.size(rolls);i++) total+=rolls[i];
+    return total;
   };
 
   self.grantPower=function(){
@@ -19,38 +28,92 @@ var ENTITY = new function(){
   };
   
   self.activateTrap/*Card*/=function(e){
-    var square,ent,msg;
+    var square,ent,msg,dmg=0;
+    self.ka=0;
     if(e==-1) ent=PC;
     else ent=mobs[e];
     square=WORLD.getTile(ent.X,ent.Y);
     switch(square.trap){
       case 'fire':
+        if(ent.wet){
+          ent.wet=0;
+          msg='Psssshhhh. You are dried off.';
+        }
         
+        else{
+          dmg=ENTITY.diceRoll(2,4);
+          msg='WHOOSH! You are burned.';
+          if(ENTITY.diceRoll()==20){
+            ent.burning+=ENTITY.diceRoll(1,8);
+            msg+=' You are also on fire. Nice.';
+          }
+        }
       break;
 
       case 'elec':
+        if(ent.wet){
+          dmg=ENTITY.diceRoll(4,8);
+          ent.wet=0;
+          msg='KRACKOOOOOOOOOOOOOOM!';
+          self.ka='elec2';
+        }
+        else{
+          dmg=ENTITY.diceRoll(1,8);
+          msg='You get the shit shocked out of you!';
+        }
       break;
 
       case 'water':
+        if(ent.burning){
+          ent.burning=0;
+          msg='That\'s nice.';
+        }
+        else{
+          ent.wet+=ENTITY.diceRoll(2,8);
+          msg='You are hit by a stream of water.';
+        }
       break;
 
       case 'acid':
+        msg='You are splashed by acid!';
+        if(ent.wet){
+          ent.wet=0;
+          dmg=ENTITY.diceRoll(1,8);
+          msg+=' The water dripping off you neutralized some of the acid.';
+        }
+        else dmg=ENTITY.diceRoll(4,6);
+          
+        
       break;
 
       case 'spike':
-        ent.HP-=_.random(1,16);
-        msg='spiketrapped';
+        dmg=ENTITY.diceRoll(1,16);
+        msg='You step on some not so cleverly hidden spikes.';
+        if(dmg<=3) msg+=' That hurt almost as bad as stepping on a lego.';
       break;
 
       case 'snake':
-        //Snake!? SNAAAAAAAAAAAKE!
-      break;
+        var snakes=_.random(3,6),poisoned=0;
+        msg='You fall into a pit of snakes!';
+        for(var i=0;i<snakes;i++){
+          dmg+=_.random(1,3);
+          if(!_.random(0,15)) poisoned++;
+        }
+        if(poisoned) {
+          for(i=0;i<poisoned;i++){
+            ent.poison+=ENTITY.diceRoll(2,8);
+          }
+          msg+=' You have been poisoned!';
+        }
 
-      case 'pit':
       break;
 
     }
-    if(!e) SCREEN.gameMessage(msg);
+    ent.HP-=dmg;
+    if(e==-1){
+      SCREEN.gameMessage(msg);
+      if(!self.ka) self.ka=square.trap;
+    }
   };
 
   self.spawnMob=function(){
@@ -119,7 +182,7 @@ var ENTITY = new function(){
   };
 
   self.killMob=function(m){
-    SCREEN.gameMessage('You kill the '+mobs[m].name);
+    //SCREEN.gameMessage('You kill the '+mobs[m].name);
     mobs.splice(m,1);
   };
   
@@ -173,19 +236,18 @@ var ENTITY = new function(){
       else if(check[0]){
         mobs[m].X=tmpx;
         mobs[m].Y=tmpy;
-        if(mobs[m].wet&&check[4]!='water') mobs[m].wet--;
         if(check[2]){
           self.activateTrap(m);
         }
         self.activateSquare(m);
       }
     }
+    if(mobs[m].HP<1) self.killMob(m);
   };
 
   self.spawnStartingMobs=function(){
-    var i;
     mobs=[];
-    for(i=0;i<21;i++) self.spawnMob();
+    _.times(25,self.spawnMob);
   };
   
   self.checkTile=function(x,y){
@@ -298,7 +360,13 @@ var ENTITY = new function(){
     else ent=mobs[e];
     square=WORLD.getTile(ent.X,ent.Y);
     switch(square.type){
+      default:
+        if(ent.wet) ent.wet--;
+        else if(ent.wet<1) ent.wet=0;
+      break;
+      
       case 'water':
+        ent.burning=0;
         if(!ent.wet) ent.wet=_.random(8,24);
         else ent.wet+=_.random(2,8);
       break;
@@ -312,14 +380,74 @@ var ENTITY = new function(){
     self.activateSquare(-1);
     if(c[3]) SCREEN.gameMessage(c[3]);
     if(c[2]){
-      self.activateTrap(PC.X,PC.Y);
+      self.activateTrap(-1);
+      if(PC.HP<1) self.killPlayer('trap',self.ka);
     }
-    if(PC.wet&&c[4]!='water') PC.wet--;
+    if(PC.burning){
+
+    }
     if(ITEM.itemCount(PC.X,PC.Y)) SCREEN.gameMessage(ITEM.itemName(PC.X,PC.Y));
+    
     if(PC.prof=='pmmm'){
       PC.MP--;
-      if(!PC.MP) alert('ded');
+      if(PC.MP<1) self.killPlayer('sayaka');
     }
 
   };
+
+  self.killPlayer=function(h,a){
+    var msg;
+    SCREEN.redrawBoard();
+    switch(h){
+      default:
+        msg=PC.name+' was killed by an unprogrammed death.\nShit happens.';
+      break;
+      
+      case 'trap':
+        msg=PC.name;
+        switch(a){
+          default:
+            msg+='was killed by an unprogrammed trap.\nThat\'s impressive';
+          break;
+          
+          case 'water':
+            msg='This isn\'t even possible!';
+          break;
+          
+          case 'fire':
+            msg+=' was burnt to a fine crisp.';
+          break;
+          
+          case 'elec':
+            msg+=' was electrocuted.';
+          break;
+
+          case 'elec2':
+            msg='Oh, snap.';
+          break;
+          
+          case 'acid':
+            msg+=' was dissolved by acid.';
+          break;
+
+          case 'spike':
+            msg+=' was skewered by spikes';
+            if(PC.burning) msg+=' and became a race shish kabob.';
+            else msg+='.';
+          break;
+
+          case 'snake':
+            msg+=' was nommed by snakes.';
+          break;
+        }
+      break;
+      
+      case 'sayaka':
+        msg=PC.name+' fell into despair and became a witch.';
+      break;
+    }
+    alert(msg+"");
+    document.location='';
+  };
+
 };

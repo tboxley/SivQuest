@@ -86,7 +86,7 @@ SCREEN = new function(){
   
   self.clearMessage=function(){
     ctx.fillStyle='black';
-    ctx.fillRect(16,635,1000,72);
+    ctx.fillRect(16,635,1200,72);
     txt=0;
   };
   
@@ -121,7 +121,7 @@ SCREEN = new function(){
         if(square.stairs) drawTile(square.stairs+'Stairs',tmpx,tmpy);
         if(ITEM.itemCount(x,y)>1) drawTile('items',tmpx,tmpy);
         if(ITEM.itemCount(x,y)==1) drawTile('item',tmpx,tmpy);
-        if(square.trapSeen) drawTile(square.trap+'Trap',tmpx,tmpy);
+        if(square.trapSeen&&square.trap) drawTile(square.trap+'Trap',tmpx,tmpy);
         if(square.door) drawTile(square.door+'Door',tmpx,tmpy);
         if(PC.X==x&&PC.Y==y) drawTile('wizard',tmpx,tmpy);
         for(i=0;i<self.mobsSee.length;i++){

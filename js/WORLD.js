@@ -3,6 +3,7 @@
 var WORLD=new function(){
   'use strict';
   var boardTiles,self=this,randColor=0,makeRooms,addDoors;
+  self.traps=['fire','elec','water','acid','spike','snake'];
   self.level=1;
   self.fColor=0;
   self.wColor=0;
@@ -19,7 +20,7 @@ var WORLD=new function(){
     boardTiles[x+','+y].type=ty;
     boardTiles[x+','+y].tile=ti;
     boardTiles[x+','+y].trap=0;
-    boardTiles[x+','+y].trapSeen=0;
+    boardTiles[x+','+y].trapSeen=1;
     boardTiles[x+','+y].overlay=0;
     boardTiles[x+','+y].color=color;
     boardTiles[x+','+y].stairs=0;
@@ -73,6 +74,7 @@ var WORLD=new function(){
       makeRooms();
       ITEM.generateInitialItems();
       ENTITY.spawnStartingMobs();
+      _.times(_.random(115,300), self.setTrap);
     }
     SCREEN.redrawBoard();
   };
@@ -184,11 +186,13 @@ var WORLD=new function(){
   };
 
   self.setTrap=function(x,y){
-    if(!x) x=PC.X;
-    if(!y) y=PC.Y;
-    var traps=['fire','elec','water','acid','spike','snake','pit'];
-    if(self.getTile(x,y).type=='floor'&&!self.getTile(x,y).overlay){
-      self.getTile(x,y).trap=traps[_.random(0,traps.length-1)];
+    var square;
+    if(!x) x=_.random(1,WORLD.width);
+    if(!y) y=_.random(1,WORLD.height);
+    square=self.getTile(x,y);
+    if(square.type=='floor'&&!square.overlay&&!square.trap){
+      self.getTile(x,y).trap=_.sample(self.traps);
+      console.log('success');
       
     }
   };
