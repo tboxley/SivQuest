@@ -32,7 +32,7 @@ var ITEM = new function(){
       })
     );
   };
-  self.types=["scroll"]//,"weapon","armor","amulet","cloak","potion"];
+  self.types=["scroll","weapon","armor","amulet","cloak","potion"];
   self.desc={dagger:"Daggers",sword:"Swords",shield:"Shields",staff:"Staves",magic:"Magic Weapons",heavy:"Heavy Armor",medium:"Medium Armor",light:"Light Armor",axe:"Axes",polearm:"Polearms"};
   
   self.resetBoardItems=function(x,y){
@@ -276,21 +276,22 @@ self.pickUpItem=function(x){
   if(!ITEM.itemCount(PC.X,PC.Y)) SCREEN.gameMessage("Nothing here to pick up.");
   else if(ITEM.itemCount(PC.X,PC.Y)==1){
     theItem=ITEM.itemId(PC.X,PC.Y)[0];
-    if(PC.items.length) for(i=0;i<=PC.items.length;i++){
-      if(items[theItem].type[0]==items[PC.items[i]].type[0]&&items[theItem].type[1]==items[PC.items[i]].type[1]){
+    for(i=0;i<PC.items.length;i++){
+      if(items[theItem].type[0]==items[PC.items[i]].type[0]&&items[theItem].type[1]==items[PC.items[i]].type[1]&&items[theItem].mat==items[PC.items[i]].mat){
         owned=i;
         break;
       }
     }
-      if(owned>-1){
+      if(owned>=-1){
         items[PC.items[owned]].count+=items[theItem].count;
       }
       else{
-        console.log(theItem)
         PC.items.push(theItem);
         items[theItem].owned=1;
       }
       WORLD.getTile(PC.X,PC.Y).items=[];
+      SCREEN.gameMessage("You pick up the "+items[theItem].name);
+      SCREEN.redrawBoard();
   }
 };
 
@@ -310,7 +311,8 @@ self.drinkPotion=function(){
 
 self.readItem=function(){
   var success=0,msg;
-  switch(ITEM.sortArray[curPos].type[1]){
+  if(ITEM.sortArray[curPos].count<1) SCREEN.gameMessage('Nope.');
+  else switch(ITEM.sortArray[curPos].type[1]){
     default:
       SCREEN.gameMessage('Unknown Item. Stop Cheating.');
     break;
@@ -329,10 +331,17 @@ self.readItem=function(){
 
   }
   if(success){
-
+      ITEM.sortArray[curPos].count--;
       flags.read=0;
       SCREEN.gameMessage(msg);
       SCREEN.redrawBoard();
+      self.checkItemCount();
+  }
+};
+
+self.checkItemCount=function(){
+  for(var i=0;i<PC.items.length;i++){
+    if(!items[PC.items[i]].count) PC.items.splice(i,1);
   }
 };
 
@@ -459,6 +468,7 @@ self.generateItem=function(x,y,z){
     }
       
     tmpItem.equip=0;
+    tmpItem.count=1;
     items.push(tmpItem);
     self.setItem(x,y,items.length-1);
     }
