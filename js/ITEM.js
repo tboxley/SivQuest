@@ -282,7 +282,7 @@ self.pickUpItem=function(x){
         break;
       }
     }
-      if(owned>=-1){
+      if(owned>-1){
         items[PC.items[owned]].count+=items[theItem].count;
       }
       else{
