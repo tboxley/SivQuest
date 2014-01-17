@@ -179,12 +179,12 @@ var ENTITY = new function(){
     else{
       SCREEN.gameMessage('You attack the '+mobs[m].name+' for '+dmg+ ' damage!');
       mobs[m].HP-=dmg;
-      if(mobs[m].HP<1) self.killMob(m);
+      if(mobs[m].HP<1) self.killMob(m,'PC');
     }
   };
 
-  self.killMob=function(m){
-    //SCREEN.gameMessage('You kill the '+mobs[m].name);
+  self.killMob=function(m,s){
+    if(s=='PC') SCREEN.gameMessage('You kill the '+mobs[m].name);
     mobs[m]=0;
   };
   
