@@ -432,7 +432,7 @@ var ENTITY = new function(){
 
           case 'spike':
             msg+=' was skewered by spikes';
-            if(PC.burning) msg+=' and became a race shish kabob.';
+            if(PC.burning) msg+=' and became a '+SETUP.races[PC.race].adj+' shish kabob.';
             else msg+='.';
           break;
 
