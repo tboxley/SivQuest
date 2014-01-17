@@ -20,6 +20,7 @@ var ITEM = new function(){
       $.getJSON(basedir+"json/armor.json",function(moo){self.armor=moo;}),
       $.getJSON(basedir+"json/amulets.json",function(moo){self.amulets=moo;}),
       $.getJSON(basedir+"json/potions.json",function(moo){self.potions=moo;}),
+      $.getJSON(basedir+"json/scrolls.json",function(moo){self.scrolls=moo;}),
       $.getJSON(basedir+"json/prefixes.json").success(function(moo){self.prefixes=moo;}).then(function(){
         for(var moose in self.prefixes.aPrefixes) self.aPre.push(moose);
         for(moose in self.prefixes.wPrefixes) self.wPre.push(moose);
@@ -31,7 +32,7 @@ var ITEM = new function(){
       })
     );
   };
-  self.types=["weapon","potion","amulet","cloak","armor"];
+  self.types=["scroll"]//,"weapon","armor","amulet","cloak","potion"];
   self.desc={dagger:"Daggers",sword:"Swords",shield:"Shields",staff:"Staves",magic:"Magic Weapons",heavy:"Heavy Armor",medium:"Medium Armor",light:"Light Armor",axe:"Axes",polearm:"Polearms"};
   
   self.resetBoardItems=function(x,y){
@@ -68,6 +69,7 @@ var ITEM = new function(){
   };
 
   self.itemSorter=function(){
+    self.sortArray=[];
     var filterType=[
       null,
       ["head"],
@@ -85,17 +87,22 @@ var ITEM = new function(){
       ["scroll"]
     ][self.sort];
     
+    
+
+
     self.sortArray= _.chain(PC.items)
-                      .map(function(id){return items[id];})
+                      .map(function(id){
+                        return items[id];
+                      })
                       .where({type:filterType})
                     .value();
   };
   
   self.itemId=function(x,y){
-  if(!x) x = PC.X;
-  if(!y) y = PC.Y;
-  return WORLD.getTile(x,y).items;
-};
+    if(!x) x = PC.X;
+    if(!y) y = PC.Y;
+    return WORLD.getTile(x,y).items;
+  };
 
 self.itemCount=function(x,y){
   if(!x) x = PC.X;
@@ -264,34 +271,26 @@ self.mobPickUp=function(e){
 };
 
 self.pickUpItem=function(x){
-  var iName;
+  var iName,i,checkItem,owned=-1,theItem;
   SCREEN.clearMessage();
   if(!ITEM.itemCount(PC.X,PC.Y)) SCREEN.gameMessage("Nothing here to pick up.");
   else if(ITEM.itemCount(PC.X,PC.Y)==1){
-    iName=ITEM.itemName(ITEM.itemId(PC.X,PC.Y));
-    items[ITEM.itemId(PC.X,PC.Y)].owned=1;
-    PC.items.push(ITEM.itemId(PC.X,PC.Y)[0]);
-    WORLD.getTile(PC.X,PC.Y).items=[];
-    SCREEN.redrawBoard();
-    SCREEN.gameMessage("You pick up the "+iName);
-    flags.pickup=0;
-  }
-  else{
-    if(!x){
-      flags.pickup=1;
-      curPos=0;
-      SCREEN.drawMPU();
+    theItem=ITEM.itemId(PC.X,PC.Y)[0];
+    if(PC.items.length) for(i=0;i<=PC.items.length;i++){
+      if(items[theItem].type[0]==items[PC.items[i]].type[0]&&items[theItem].type[1]==items[PC.items[i]].type[1]){
+        owned=i;
+        break;
+      }
     }
-    else {
-      var theid=self.itemId()[x-1];
-      items[theid].owned=1;
-      PC.items.push(theid);
-      delete WORLD.getTile(PC.X,PC.Y).items[x-1];
-      self.resetBoardItems();
-      if(curPos>self.itemCount()-1) curPos=self.itemCount()-1;
-      SCREEN.drawMPU();
-      SCREEN.gameMessage("You pick up the "+self.itemName(theid));
-    }
+      if(owned>-1){
+        items[PC.items[owned]].count+=items[theItem].count;
+      }
+      else{
+        console.log(theItem)
+        PC.items.push(theItem);
+        items[theItem].owned=1;
+      }
+      WORLD.getTile(PC.X,PC.Y).items=[];
   }
 };
 
@@ -301,7 +300,7 @@ self.generateInitialItems=function(){
   for(x = 1;x<=_.random(30,50);x++){
     randx=_.random(1,WORLD.width);
     randy=_.random(1,WORLD.height);
-    if(WORLD.inRoom(randx,randy)&&WORLD.getTile(randx,randy).type=="floor"&&!WORLD.getTile(randx,randy).door) self.generateItem(randx,randy);
+    if(WORLD.getTile(randx,randy).type=="floor"&&!WORLD.getTile(randx,randy).door) self.generateItem(randx,randy);
   }
 };
 
@@ -309,12 +308,40 @@ self.drinkPotion=function(){
   
 };
 
+self.readItem=function(){
+  var success=0,msg;
+  switch(ITEM.sortArray[curPos].type[1]){
+    default:
+      SCREEN.gameMessage('Unknown Item. Stop Cheating.');
+    break;
+    
+    case 'de':
+      msg='This scroll is useless.';
+      success=1;
+    break;
+    
+    case 'au':
+      PC.money+=ENTITY.diceRoll(10,20);
+      msg='You feel richer.';
+      success=1;
+    break;
+    
+
+  }
+  if(success){
+
+      flags.read=0;
+      SCREEN.gameMessage(msg);
+      SCREEN.redrawBoard();
+  }
+};
+
 self.generateItem=function(x,y,z){
-  var matArr=[],typeArr=[],theMat,theName="",theType,uid,whatIsIt,statAdd=[0,0,0,0,0],regen,kind,armor=0,i,tmpItem,prefix,suffix;
+  var matArr=[],typeArr=[],theMat,theName="",theType,uid,whatIsIt,statAdd=[0,0,0,0,0,0],regen,kind,armor=0,i,tmpItem,prefix,suffix,success=1;
   if(z) whatIsIt=z;
   else whatIsIt=self.types[_.random(0,self.types.length-1)];
   
-    if(_.random(0,1600-(WORLD.level*4))&&_.size(self.artifacts)&&!z){
+    if(!_.random(1,100-(WORLD.level*4))&&_.size(self.artifacts)&&!z){
       console.log("RELIC");
       tmpItem=_.sample(self.artifacts);
       delete self.artifacts[_.findKey(self.artifacts,tmpItem)];
@@ -408,11 +435,20 @@ self.generateItem=function(x,y,z){
       break;
 
       case "scroll":
-        tmpItem={};
+        success=0;
+        theType=_.sample(_.keys(ITEM.scrolls));
+        if(ITEM.scrolls[theType].rarity<=WORLD.level+_.random(-1,1)){
+          theName=ITEM.scrolls[theType].name;
+          theType=["scroll",theType];
+          tmpItem={name:"Scroll of "+theName,type:theType,uid:"scroll",count:1};
+          success=1;
+        }
+
+
       break;
       
     }
-    
+    if(success){
     if(!x||!y){
       tmpItem.owned=1;
       tmpItem.idd=1;
@@ -425,9 +461,10 @@ self.generateItem=function(x,y,z){
     tmpItem.equip=0;
     items.push(tmpItem);
     self.setItem(x,y,items.length-1);
+    }
 };
 
-
+  
   self.setItem=function(x,y,z){
     if(!x||!y) PC.items.unshift(z);
     else WORLD.getTile(x,y).items.unshift(z);

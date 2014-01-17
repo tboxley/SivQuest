@@ -1,5 +1,5 @@
 {
-  "sup":{"name":"Invisibility","stats":[0,0,0,0,0],"armor":0},
-  "pro":{"name":"Protection","stats":[0,0,0,0,0],"armor":2},
-  "def":{"name":"Defense","stats":[0,0,3,0,0],"armor":0}
+  "sup":{"name":"Invisibility","stats":[0,0,0,0,0,0],"armor":0},
+  "pro":{"name":"Protection","stats":[0,0,0,0,0,0],"armor":2},
+  "def":{"name":"Defense","stats":[0,0,0,3,0,0],"armor":0}
 }

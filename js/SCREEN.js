@@ -2,7 +2,7 @@
 /*jshint unused:true,supernew:true */
 SCREEN = new function(){
 
-  var tiles=[],camera={},self=this,blankScreen,loadImages,writeText,helpText,drawTile,barDraws=0,gameVersion='"It\'s a trap!" Edition.',ctx;
+  var tiles=[],camera={},self=this,blankScreen,loadImages,writeText,helpText,drawTile,barDraws=0,gameVersion='LeVar Burton Edition.',ctx;
   self.cty=0;
   self.mobsSee=[];
 
@@ -160,7 +160,7 @@ SCREEN = new function(){
   self.refreshStats=function(){
     ctx.fillStyle='black';
     ctx.fillRect(1020,12,240,580);
-    writeText(PC.name,1024,128-96);
+    writeText(PC.name,1024,32);
     writeText("Lvl "+PC.LV+" "+SETUP.professions[PC.prof].fName,1024,148-96);
     writeText("HP:"+PC.HP+"/"+(PC.MaxHP+PC.tmpStats[0]),1024,168-96);
     writeText("MP:"+PC.MP+"/"+(PC.MaxMP+PC.tmpStats[1]),1024,188-96);
@@ -187,7 +187,7 @@ SCREEN = new function(){
     var iPos=0;
     blankScreen();
     helpText("Esc/I => Close. D => Drop Item. U => Use Item.");
-    writeText('Inventory',480,128-96);
+    writeText('Inventory',480,32);
     for(var x =0;x<=24;x++){
       if(PC.items[x]>=0) {
         if(curPos<25) num=x;
@@ -212,7 +212,7 @@ SCREEN = new function(){
     if(flags.inventory) self.gameMessage("Unsorted items, now nasty.");
     else if(!flags.equip) self.gameMessage("You open your equipment.");
     blankScreen();
-    writeText('Equipment Menu',460,128-96);
+    writeText('Equipment Menu',460,32);
     if(!ITEM.sort){
       writeText('Head:           '+ITEM.itemName(PC.equip.head),80,104);
       writeText('Amulet:         '+ITEM.itemName(PC.equip.amulet),80,124);
@@ -248,7 +248,7 @@ SCREEN = new function(){
   self.drawMPU=function(){
     var iPos=0,idList=ITEM.itemId(PC.X,PC.Y);
     blankScreen();
-    writeText('Pick shit up.',480,128-96);
+    writeText('Pick shit up.',480,32);
     for(var x =0;x<=24;x++){
       if(idList[x]) {
         if(curPos<25) num=x;
@@ -263,5 +263,28 @@ SCREEN = new function(){
       else writeText("> ",78,104+24*18);
     }
     else writeText("Nothing else to pick up.",86,200);
+  };
+  
+  self.readMenu=function(){
+    iPos=0;
+    blankScreen();
+    writeText('Reading Rainbow Menu',460,32);
+    if(ITEM.sortArray.length){
+      self.gameMessage("What would you like to read?");
+        for(var x =0;x<=24;x++){
+          if(ITEM.sortArray[x]) {
+            if(curPos<25) num=x;
+            else num=x+(curPos-24);
+            writeText(ITEM.itemName(_.findKey(items,ITEM.sortArray[num])),96,104+iPos*18);
+          }
+          iPos++;
+        }
+
+      if(curPos<25) writeText("> ",78,104+curPos*18);
+      else writeText("> ",78,104+24*18);
+    }
+    else gameMessage('HAX');
+    helpText("Esc => Cancel. Enter/Space/R => Read Scroll.");
+    
   };
 };

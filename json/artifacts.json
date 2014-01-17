@@ -1,6 +1,6 @@
 {
-	"relic3":{"name":"Gungnir","uid":"ono","toHit":7,"toDmg":8,"armor":5,"die":[2,16],"stats":[0,8,0,0,0],"artifact":1,"mat":"Yhhdrasil","type":["2hand","polearm"],"desc":"Odin's spear"},
-	"fpan":{"name":"Princess' Skillet","uid":"Well seasoned skillet","toHit":10,"toDmg":4,"armor":0,"die":[1,20],"stats":[0,0,0,12,2],"artifact":1,"mat":"Cast Iron","type":["1hand","hammer"],"desc":"Who knew?"},
-  "rl":{"name":"RAWKAT LAWNCHAIR!","uid":"rocket launcher?","range":22,"toHit":12,"toDmg":2,"die":[10,6],"armor":0,"stats":[0,0,0,0,0],"artifact":1,"mat":"Hardened Steel","type":["mWeapon","rocket"],"desc":"Don't blow yourself up..."}
+	"relic3":{"name":"Gungnir","uid":"ono","toHit":7,"toDmg":8,"armor":5,"die":[2,16],"stats":[0,0,8,0,0,0],"artifact":1,"mat":"Yhhdrasil","type":["2hand","polearm"],"desc":"Odin's spear"},
+	"fpan":{"name":"Princess' Skillet","uid":"Well seasoned skillet","toHit":10,"toDmg":4,"armor":0,"die":[1,20],"stats":[0,0,0,0,12,2],"artifact":1,"mat":"Cast Iron","type":["1hand","hammer"],"desc":"Who knew?"},
+  "rl":{"name":"RAWKAT LAWNCHAIR!","uid":"rocket launcher?","range":22,"toHit":12,"toDmg":2,"die":[10,6],"armor":0,"stats":[0,0,0,0,0,0],"artifact":1,"mat":"Hardened Steel","type":["mWeapon","rocket"],"desc":"Don't blow yourself up..."}
 
 }

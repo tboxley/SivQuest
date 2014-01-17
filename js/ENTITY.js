@@ -314,8 +314,8 @@ var ENTITY = new function(){
     var i,x,y,square,distanceFromPC,visibility;
     PC.LOS=3;
     if(!WORLD.level) PC.LOS=7;
-    else if(WORLD.inRoom(PC.X,PC.Y)) PC.LOS=3;
-    else PC.LOS=4;
+    else if(WORLD.inRoom(PC.X,PC.Y)) PC.LOS=8;
+    else PC.LOS=8;
     for(x=PC.X-PC.LOS;x<=PC.X+PC.LOS+1;x++) {
       for(y=PC.Y-PC.LOS;y<=PC.Y+PC.LOS;y++) {
         
@@ -326,9 +326,11 @@ var ENTITY = new function(){
 
         square=WORLD.getTile(x,y);
 
-        if(distanceFromPC>PC.LOS-1) {
+        if(distanceFromPC>PC.LOS-2) {
           visibility = Math.max(square.seen,1-Math.floor(PC.LOS/PC.LOS)/PC.LOS);
-        } else {
+        }
+
+        else {
           visibility = 1;
         }
 

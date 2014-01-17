@@ -242,6 +242,30 @@ $(window).keydown(function(e) {
     }
     
   }
+  
+  else if(flags.read){
+    SCREEN.clearMessage();
+    switch(keys[kc]){
+      case 'esc':
+        flags.read=0;
+        SCREEN.redrawBoard();
+      break;
+      case 'up':
+        if(curPos) curPos--;
+        SCREEN.readMenu();
+      break;
+
+      case 'down':
+        if(curPos<ITEM.sortArray.length-1) curPos++;
+        SCREEN.readMenu();
+      break;
+
+      case 'return':
+      case 'space':
+        ITEM.readItem();
+      break;
+    }
+  }
   else{
     switch(keys[kc]){
       case 'left':
@@ -294,7 +318,19 @@ $(window).keydown(function(e) {
       case 'p':
         ITEM.pickUpItem(0);
       break;
-
+      
+      case 'r':
+        SCREEN.clearMessage();
+        ITEM.sort=13;
+        ITEM.itemSorter();
+        curPos=0;
+        if(ITEM.sortArray.length){
+          SCREEN.readMenu();
+          flags.read=1;
+        }
+        else SCREEN.gameMessage('You have nothing to read.');
+      break;
+      
       case 'space':
       case 'return':
         if(WORLD.getTile(PC.X,PC.Y).stairs) WORLD.nextFloor();
