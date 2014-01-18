@@ -181,6 +181,9 @@ var ENTITY = new function(){
       mobs[m].HP-=dmg;
       if(mobs[m].HP<1) self.killMob(m,'PC');
     }
+    if(PC.prof=='pmmm'){
+      PC.MP--;
+    }
   };
 
   self.killMob=function(m,s){
@@ -393,6 +396,7 @@ var ENTITY = new function(){
   };
   
   self.movePlayer=function(x,y,c){
+    var n;
     PC.X+=x;
     PC.Y+=y;
     self.activateSquare(-1);
@@ -405,11 +409,28 @@ var ENTITY = new function(){
 
     if(ITEM.itemCount(PC.X,PC.Y)) SCREEN.gameMessage(ITEM.itemName(PC.X,PC.Y));
     
-    if(PC.prof=='pmmm'){
-      PC.MP--;
+    if(PC.prof=='pmmm'&&WORLD.level){
+      var intCheck;
+      PC.mgCounter--;
+      if(PC.mgCounter===0) {
+        PC.MP--;
+        PC.mgCounter=self.diceRoll(1,8)+self.statCheck(-1,'INT');
+      }
       if(PC.MP<1) self.killPlayer('sayaka');
     }
 
+  };
+
+  self.statCheck=function(e,s){
+  var ent;
+    if(!e) e=-0;
+    if(!s) s='HP';
+    if(e==-1) ent=PC;
+    else ent=mobs[e];
+    if(!ent[s]) return 0;
+    else return (ent[s]-10)/2;
+
+    
   };
 
   self.killPlayer=function(h,a){

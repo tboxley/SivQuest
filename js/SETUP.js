@@ -13,6 +13,7 @@ var SETUP = new function(){
   };
   
   self.startGame=function(){
+    curPos=0;
     flags.title=0;
     flags.setup=1;
     SCREEN.setupScreen();
@@ -85,7 +86,8 @@ var SETUP = new function(){
         equip:{head:-1,amulet:-1,cloak:-1,body:-1,weapon:-1,shield:-1,bracers:-1,gauntlets:-1,boots:-1,mWeapon:-1,missile:-1},
         LOS:6,
         powers:[],
-        Moves:0
+        Moves:0,
+        mgCounter:16
       };
       PC.MaxHP+=PC.DEF-10;
       PC.HP=PC.MaxHP;
@@ -96,7 +98,6 @@ var SETUP = new function(){
       ENTITY.updateArmor();
       flags.setup=0;
       WORLD.level=0;
-      if(PC.prof=='pmmm') SOUNDS.playMusic('test');
       WORLD.generateBoard();
       
     }
