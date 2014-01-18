@@ -21,7 +21,7 @@
     </style>
     <script>
       'use strict'
-      var pickp=0,pickr=0,picks=0,curPos=0,items=[],txt=0,lastPos=0,mobs=[],PC;
+      var pickp=0,pickr=0,picks=0,curPos=0,items=[],txt=0,lastPos=0,mobs=[],PC,sivtest=0;
       var flags={setup:0,title:1,changelog:0,equip:0,help:0,inventory:0,pickup:0,camera:0,namePC:1,use:0};
    
       
@@ -38,8 +38,6 @@
     
   </head>
   <body>
-    <audio id='music'></audio>
-    <audio id='sfx'></audio>
     <canvas id='canvas' width='1280' height='720'>Get a better browser, you fuck.</canvas>
     <script>
       $.ajaxSetup({
@@ -47,11 +45,12 @@
       });
       $(window).on('load',function(){
         SCREEN.titleScreen();
-        SOUNDS.setupVars();
+        SOUNDS.init();
         SOUNDS.loadJSON();
         ITEM.loadJSON();
         ENTITY.loadJSON();
         SETUP.loadJSON();
+        SOUNDS.playMusic('title');
       });
       
     </script>

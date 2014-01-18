@@ -5,17 +5,17 @@ var SOUNDS=new function(){
     //?!?!?!?!
   };
 
-  self.setupVars=function(){
-    self.music=document.getElementById('music');
-    self.sfx=document.getElementById('sfx');
+  self.init=function(){
+    self.music=new Audio();
+    self.sfx=new Audio();
   };
   self.playMusic=function(s){
-    self.music.src='sounds/music/'+s+'.mp3';
+    self.music.src='sounds/music/'+s+'.ogg';
     self.music.play();
   };
 
   self.playSFX=function(s){
-    self.sfx.src='sounds/sfx/'+s+'.mp3';
+    self.sfx.src='sounds/sfx/'+s+'.ogg';
     self.sfx.play();
   };
 };
