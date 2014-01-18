@@ -5,7 +5,7 @@ $(window).keydown(function(e) {
   //e.preventDefault();
   var kc = e.which,keys={8:'bksp', 13:'return',27:'esc',32:'space',33:'pgup',34:'pgdn',37:'left',38:'up',39:'right',40:'down'},i;
   for(i = 65;i<=90;i++) keys[i]=String.fromCharCode(i).toLowerCase();
-
+  for(i = 48;i<=57;i++) keys[i]=i-48;
   //prevent history back on backspace
   if(keys[kc]=='bksp') {
     e.preventDefault();
@@ -17,21 +17,50 @@ $(window).keydown(function(e) {
       flags.changelog=0;
       flags.title=1;
     break;
-      
-    case 'g':
-      window.open('https://github.com/sivart0/SivQuest','_blank');
-    break;
+  }
+  
+  else if(flags.help){
+    switch(keys[kc]){
+      case 0:
+        curPos=0;
+        SCREEN.infoScreen('h');
+      break;
+      case 1:
+        curPos=12;
+        SCREEN.infoScreen('h');
+      break;
+      case 'esc':
+        flags.help=0;
+        SCREEN.fullBlank();
+        if(flags.title) SCREEN.titleScreen();
+        else SCREEN.redrawBoard();
+      break;
+      case 'up':
+        if(curPos) curPos--;
+        SCREEN.infoScreen('h');
+      break;
+      case 'pgup':
+        if(curPos>=5) curPos-=5;
+        else curPos=0;
+        SCREEN.infoScreen('h');
+      break;
+      case 'down':
+        if(SCREEN.clCount>curPos+36) curPos++;
+        SCREEN.infoScreen('h');
+      break;
+    }
 
   }
+
   else if(flags.title) switch(keys[kc]){
     case 'return':
       SETUP.startGame();
     break;
     case 'c':
       curPos=0;
-      SCREEN.changelog();
+      SCREEN.infoScreen('c');
       flags.changelog=1;
-      flags.title=0;
+      flags.title=1;
     break;
     }
   
@@ -46,13 +75,13 @@ $(window).keydown(function(e) {
         SCREEN.gameMessage('Enough of that.');
       break;
       
-      case 'pgdn':
+      case 'pgup':
         if(curPos<25) curPos=0;
         else curPos-=25;
         SCREEN.showInventory();
       break;
       
-      case 'pgup':
+      case 'pgdn':
         if(curPos+25>PC.items.length-1) curPos=PC.items.length-1;
         else curPos+=25;
         SCREEN.showInventory();
@@ -305,7 +334,8 @@ $(window).keydown(function(e) {
       break;
 
       case 'h':
-        SCREEN.helpMenu();
+        curPos=0;
+        SCREEN.infoScreen('h');
         flags.help=1;
       break;
       

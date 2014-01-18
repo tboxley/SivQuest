@@ -1,0 +1,54 @@
+Welcome to the Manual. Here you will learn how to play SivQuest, read the most 
+  compelling story of your life, and learn how to go Super Saiyan.
+
+Table of contents:
+  1. Story
+  2. Races
+  3. Professions
+  4.
+  5.
+  6.
+  7.
+  8. KeyBindings.
+ 
+
+1. Story
+  
+  ONCE UPON A TIME. SHIT WENT DOWN!
+  The end.
+
+
+  Riveting...
+
+2. Races
+  Human:
+    Balanced race with no unique abilities. Pretty boring if you ask me.
+    Stats: +10 HP, +5 MP, +1 everything else.
+
+  High Elf:
+    INFO
+    Stats: -4 HP, +12 MP, -2 STR, -2 DEF, +5 INT, +4 SPD
+3. Professions
+
+4. ?!
+
+5. ?!
+
+6. ?!
+
+7. ?!
+
+8. KeyBindings.
+
+  Movement:
+    a/left  =>  Move Left
+    s/down  =>  Move Down
+    d/right =>  Move Right
+    w/up    =>  Move Up
+    p       =>  Pickup Items
+
+  Items:
+    i       =>  Open Inventory
+    e       =>  Open Equipment
+    q       =>  Drink Menu
+    r       =>  Reading Rainbow
