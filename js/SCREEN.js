@@ -2,7 +2,7 @@
 /*jshint unused:true,supernew:true */
 SCREEN = new function(){
 
-  var tiles=[],camera={},self=this,blankScreen,loadImages,writeText,helpText,drawTile,barDraws=0,gameVersion='Severus Snape Edition.',ctx;
+  var tiles=[],camera={},self=this,blankScreen,loadImages,writeText,helpText,drawTile,barDraws=0,gameVersion='"WHAT AM I DOING!?" Edition.',ctx;
   self.cty=0;
   self.mobsSee=[];
 
@@ -21,6 +21,7 @@ SCREEN = new function(){
       for(var i=0;i<imgs.length;i++){
         tiles[imgs[i]]=new Image();
         tiles[imgs[i]].src='img/'+imgs[i]+'.png';
+        
       }
     });
   };
@@ -33,18 +34,32 @@ SCREEN = new function(){
     ctx.fillRect(0,0,1280,720);
     document.title='SivQuest '+gameVersion;
     writeText("SivQuest",250,220,0,224,'lhf_stratfordregular');
-    writeText(gameVersion,270,284,0,32,'lhf_stratfordregular');
+    writeText(gameVersion,270,294,0,32,'lhf_stratfordregular');
     helpText("Enter => Start Game. C => Changelog.");
+
   };
   
-  self.changelog=function(){
-    var i;
+
+
+  self.infoScreen=function(m){
+    var i,whichone,name;
+    if(m=='h') {
+      whichone='helptext';
+      name='manual.doc';
+    }
+    else if(m=='c') {
+      whichone='changelog';
+      name='What have we changed?';
+    }
     ctx.fillStyle='rgba(0,0,0,1)';
     ctx.fillRect(0,0,1280,720);
-    $.get("changelog.txt").done(function(e){
+    writeText(name,600,32);
+    $.get("txt/"+whichone+".txt").done(function(e){
       var moo=e.split("\n");
-      for(i=0;i<36;i++) if(typeof moo[i+(curPos*36)]!=='undefined')writeText(moo[i+(curPos*36)],224,56+16*i);
+      self.clCount=moo.length;
+      for(i=0;i<36;i++) if(typeof moo[i+curPos]!=='undefined')writeText(moo[i+curPos],180,86+16*i);
     });
+    helpText("Up/Down => Scroll 1 line. Page up/Page down => Scroll 5 lines. 0-9 => Jump to section.",72);
   };
   
   self.colorOverlay=function(x,y,color,alpha){
@@ -97,11 +112,8 @@ SCREEN = new function(){
   
   self.redrawBoard=function(){
     var square,i,x,y,see;
-    if(!barDraws){
-      ctx.drawImage(tiles.topbar,0,13*48);
-      ctx.drawImage(tiles.sidebar,1008,0);
-      barDraws=1;
-    }
+    ctx.drawImage(tiles['ui/topbar'],0,13*48);
+    ctx.drawImage(tiles['ui/sidebar'],1008,0);
     ENTITY.updateLOS();
     blankScreen();
     if(PC.X>=11&&PC.X<=WORLD.width-10) camera.x=PC.X;
@@ -116,19 +128,22 @@ SCREEN = new function(){
       for(y = camera.y-6;y<=camera.y+6;y++){
         square=WORLD.getTile(x,y);
 
-        if(square.tile) drawTile(square.tile,tmpx,tmpy);
+        if(square.tile) drawTile('tiles/'+square.tile,tmpx,tmpy);
         if(square.color) self.colorOverlay(tmpx,tmpy,square.color);
-        if(square.stairs) drawTile(square.stairs+'Stairs',tmpx,tmpy);
-        if(ITEM.itemCount(x,y)>1) drawTile('items',tmpx,tmpy);
-        if(ITEM.itemCount(x,y)==1) drawTile('item',tmpx,tmpy);
-        if(square.trapSeen&&square.trap) drawTile(square.trap+'Trap',tmpx,tmpy);
+        if(square.stairs) drawTile('tiles/dStairs',tmpx,tmpy);
+        if(ITEM.itemCount(x,y)>1) drawTile('items/items',tmpx,tmpy);
+        if(ITEM.itemCount(x,y)==1) drawTile('items/item',tmpx,tmpy);
+        if(square.trapSeen&&square.trap) drawTile('traps/'+square.trap,tmpx,tmpy);
         if(square.door) drawTile(square.door+'Door',tmpx,tmpy);
-        if(PC.X==x&&PC.Y==y) drawTile('wizard',tmpx,tmpy);
+        if(PC.X==x&&PC.Y==y) {
+          if("pc/"+tiles[PC.prof]) drawTile("pc/"+PC.prof,tmpx,tmpy);
+          else drawTile('wizard',tmpx,tmpy);
+        }
         for(i=0;i<self.mobsSee.length;i++){
           see=self.mobsSee[i];
-          if(mobs[see].X==x&&mobs[see].Y==y&&!mobs[see].invis) drawTile('trap',tmpx,tmpy);
+          if(mobs[see].X==x&&mobs[see].Y==y&&!mobs[see].invis) drawTile('mobs/mob',tmpx,tmpy);
         }
-        if(square.overlay) drawTile(square.overlay,tmpx,tmpy);
+        if(square.overlay) drawTile("overlays/"+square.overlay,tmpx,tmpy);
         if(square.seen!=1) self.colorOverlay(tmpx,tmpy,'#000',1-square.seen);
         
         tmpy++;
@@ -140,12 +155,13 @@ SCREEN = new function(){
    };
    
    drawTile=function(tile,x,y){
-    if(!tiles[tile]) tile='missing';
-    ctx.drawImage(tiles[tile],(x-1)*48,(y-1)*48);
+    if(!tiles[tile]) tile='misc/missing';
+    ctx.drawImage(tiles[tile],(x-1)*48,(y-1)*48,48,48);
   };
   
-  helpText=function(d){
-    writeText(d,80,604);
+  helpText=function(d,o){
+    if(!o) o=0;
+    writeText(d,80,604+o);
   };
   
   writeText=function(text,x,y,color,size,font){
@@ -178,6 +194,11 @@ SCREEN = new function(){
   blankScreen=function(){
     ctx.fillStyle='black';
     ctx.fillRect(0,0,1008,720-96);
+  };
+
+  self.fullBlank=function(){
+    ctx.fillStyle='black';
+    ctx.fillRect(0,0,1280,720);
   };
   
   self.showInventory=function (){
