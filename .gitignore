@@ -1,2 +1,3 @@
 .DS_Store
-.mp3
+sounds/music/*.mp3
+sounds/sfx/*.mp3
