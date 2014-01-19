@@ -293,8 +293,8 @@ self.pickUpItem=function(x){
 self.generateInitialItems=function(){
   var randx,randy,x;
   for(x = 1;x<=_.random(30,50);x++){
-    randx=_.random(1,WORLD.width);
-    randy=_.random(1,WORLD.height);
+    randx=_.random(1,WORLD.floors[WORLD.level].width);
+    randy=_.random(1,WORLD.floors[WORLD.level].height);
     if(WORLD.getTile(randx,randy).type=="floor"&&!WORLD.getTile(randx,randy).door) self.generateItem(randx,randy);
   }
 };

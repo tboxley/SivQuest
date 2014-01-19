@@ -13,8 +13,8 @@ var ENTITY = new function(){
   self.diceRoll=function(d,x){
     //this function is useless
     var rolls=[],total=0;
-    if(!d) d=1;
-    if(!x) x=20;
+    d=d||1;
+    x=x||20;
     rolls = _.times(d, _.partial(_.random, 1, x,false));
     for(var i=0;i<_.size(rolls);i++) total+=rolls[i];
     return total;
@@ -29,11 +29,41 @@ var ENTITY = new function(){
   };
   
   self.activateTrap=function(e){
-    var square,ent,msg,dmg=0;
+    var square,ent,msg,dmg=0,chance=1,unlucky=0,found=0;
     self.ka=0;
     if(e==-1) ent=PC;
-    else ent=mobs[e];
+    else ent=WORLD.floors[WORLD.level].mobs[e];
+    
     square=WORLD.getTile(ent.X,ent.Y);
+    if(e==-1) {
+      if(square.trapSeen){
+        chance=self.diceRoll();
+        unlucky=1;
+      }
+      else square.trapSeen=1;
+    }
+    
+    else{
+      for(i=0;i<ent.trapsSeen.length;i++){
+        if(ent.trapsSeen[i][0]==ent.X&&ent.trapsSeen[i][1]==ent.Y){
+          found=1;
+          break;
+        }
+      }
+      
+      if(!found){
+        ent.trapsSeen.push([ent.X,ent.Y]);
+
+      }
+      
+      else{
+        chance=self.diceRoll(1,20);
+      }
+
+    }
+
+    if(chance==1){
+
     switch(square.trap){
       case 'fire':
         if(ent.wet){
@@ -80,7 +110,7 @@ var ENTITY = new function(){
         if(ent.wet){
           ent.wet=0;
           dmg=ENTITY.diceRoll(1,8);
-          msg+=' The water dripping off you neutralized some of the acid.';
+          msg+=' The water dripping off you neutralizes some of the acid.';
         }
         else dmg=ENTITY.diceRoll(4,6);
           
@@ -112,23 +142,24 @@ var ENTITY = new function(){
     }
     ent.HP-=dmg;
     if(e==-1){
+      if(unlucky) SCREEN.gameMessage('LOLOLOL')
       SCREEN.gameMessage(msg);
       if(!self.ka) self.ka=square.trap;
     }
+  }
   };
 
   self.spawnMob=function(){
-    var randx,randy,i,s,canSpawn=0,mobArr=[],mob,whichMob,theMob;
-    randx=_.random(1,WORLD.width);
-    randy=_.random(1,WORLD.height);
-    if(!mobs.length) canSpawn=1;
-    else for(i=0;i<mobs.length;i++){
-      if((mobs[i].X==randx&&mobs[i].Y==randy)||(PC.X==randx&&PC.Y==randy)) {
-        canSpawn=0;
-        break;
-      }
+    var randx,randy,i,s,canSpawn=1,mobArr=[],mob,whichMob,theMob;
+    randx=_.random(1,WORLD.floors[WORLD.level].width);
+    randy=_.random(1,WORLD.floors[WORLD.level].height);
+    
+    if(WORLD.floors[WORLD.level].mobs.length) for(i=0;i<WORLD.floors[WORLD.level].mobs.length;i++){
+      canSpawn=1;
+      if((WORLD.floors[WORLD.level].mobs[i].X==randx&&WORLD.floors[WORLD.level].mobs[i].Y==randy)||(PC.X==randx&&PC.Y==randy)) canSpawn=0;
       else if(randx==PC.X&&randy==PC.Y) canSpawn=0;
-      else canSpawn=1;
+      else if(WORLD.getTile(randx,randy).type!='floor') canSpawn=0;
+      if(!canSpawn) break;
     }
     if(canSpawn){
       for(i in self.monsters){
@@ -141,12 +172,13 @@ var ENTITY = new function(){
         theMob=self.monsters[whichMob];
         mob={HP:0,STR:0,DEF:0,SPD:0,INT:0,armor:0};
         for(s in mob) for(i=0;i<theMob[s][0];i++) mob[s]+=_.random(1,theMob[s][1])+WORLD.level+_.random(1,2);
-        mob.name=theMob.name+mobs.length;
         mob.X=randx;
         mob.Y=randy;
+        mob.name=theMob.name;
         mob.items=[];
         mob.hostile=0;
-        mobs.push(mob);
+        mob.trapsSeen=[];
+        WORLD.floors[WORLD.level].mobs.push(mob);
       }
     }
     else console.log('no');
@@ -154,7 +186,8 @@ var ENTITY = new function(){
   };
   
   self.attackMob=function(m){
-    var dice,toHit,hit,dmg=0,toDmg,i,weapon;
+    var dice,toHit,hit,dmg=0,toDmg,i,weapon,mobs;
+    mobs=WORLD.floors[WORLD.level].mobs;
     if(PC.equip.weapon==-1){
       if(PC.prof=='nj') dice=[2,6];
       else dice=[1,4];
@@ -187,8 +220,8 @@ var ENTITY = new function(){
   };
 
   self.killMob=function(m,s){
-    if(s=='PC') SCREEN.gameMessage('You kill the '+mobs[m].name);
-    mobs[m]=0;
+    if(s=='PC') SCREEN.gameMessage('You kill the '+WORLD.floors[WORLD.level].mobs[m].name);
+    WORLD.floors[WORLD.level].mobs[m]=0;
   };
   
   self.mobLOS=function(m){
@@ -196,7 +229,7 @@ var ENTITY = new function(){
   };
 
   self.moveEntities=function(x,y){
-    var i,check;
+    var i,check,mobs=WORLD.floors[WORLD.level].mobs;
     self.waitMobs=[];
     SCREEN.clearMessage();
     check=self.checkTile(PC.X+x,PC.Y+y);
@@ -214,7 +247,7 @@ var ENTITY = new function(){
   };
 
   self.moveMob=function(m,px,py){
-    var tmpx,tmpy,check,i,x,y,attack=0;
+    var tmpx,tmpy,check,i,x,y,attack=0,mobs=WORLD.floors[WORLD.level].mobs;
     if(mobs[m].hostile){
       for(x=mobs[m].X-1;x<=mobs[m].X+1;x++){
         for(y=mobs[m].Y-1;y<=mobs[m].Y+1;y++){
@@ -255,12 +288,12 @@ var ENTITY = new function(){
   };
 
   self.spawnStartingMobs=function(){
-    mobs=[];
+    WORLD.floors[WORLD.level].mobs=[];
     _.times(28,self.spawnMob);
   };
   
   self.checkTile=function(x,y){
-    var r=[],square=WORLD.getTile(x,y),doMove,cam,msg=0,mob=0,i;
+    var r=[],square=WORLD.getTile(x,y),doMove,cam,msg=0,mob=0,i,mobs=WORLD.floors[WORLD.level].mobs;
     for(i=0;i<mobs.length;i++){
       if(x==mobs[i].X&&y==mobs[i].Y){
         mob=i+1;
@@ -315,7 +348,7 @@ var ENTITY = new function(){
 
   self.updateLOS=function(){
     SCREEN.mobsSee=[];
-    var i,x,y,square,distanceFromPC,visibility;
+    var i,x,y,square,distanceFromPC,visibility,mobs=WORLD.floors[WORLD.level].mobs;
     PC.LOS=3;
     if(!WORLD.level) PC.LOS=7;
     else if(WORLD.inRoom(PC.X,PC.Y)) PC.LOS=8;
@@ -369,7 +402,7 @@ var ENTITY = new function(){
   self.activateSquare=function(e){
     var ent,square;
     if(e==-1) ent=PC;
-    else ent=mobs[e];
+    else ent=WORLD.floors[WORLD.level].mobs[e];
     square=WORLD.getTile(ent.X,ent.Y);
     switch(square.type){
       default:
@@ -410,23 +443,21 @@ var ENTITY = new function(){
     if(ITEM.itemCount(PC.X,PC.Y)) SCREEN.gameMessage(ITEM.itemName(PC.X,PC.Y));
     
     if(PC.prof=='pmmm'&&WORLD.level){
-      var intCheck;
       PC.mgCounter--;
-      if(PC.mgCounter===0) {
+      if(PC.mgCounter<1) {
         PC.MP--;
         PC.mgCounter=self.diceRoll(1,8)+self.statCheck(-1,'INT');
       }
       if(PC.MP<1) self.killPlayer('sayaka');
     }
-
+    //SOUNDS.playSFX('doot');
   };
 
   self.statCheck=function(e,s){
   var ent;
-    if(!e) e=-0;
-    if(!s) s='HP';
+    console.log(e);
     if(e==-1) ent=PC;
-    else ent=mobs[e];
+    else ent=WORLD.floors[WORLD.level].mobs[e];
     if(!ent[s]) return 0;
     else return (ent[s]-10)/2;
 

@@ -2,7 +2,7 @@
 /*jshint unused:true,supernew:true */
 SCREEN = new function(){
 
-  var tiles=[],camera={},self=this,blankScreen,loadImages,writeText,helpText,drawTile,barDraws=0,gameVersion='"WHAT AM I DOING!?" Edition.',ctx;
+  var tiles=[],camera={},self=this,blankScreen,loadImages,writeText,helpText,drawTile,barDraws=0,gameVersion='Déjà vu Edition.',ctx;
   self.cty=0;
   self.mobsSee=[];
 
@@ -111,17 +111,17 @@ SCREEN = new function(){
   };
   
   self.redrawBoard=function(){
-    var square,i,x,y,see;
+    var square,i,x,y,see,mobs=WORLD.floors[WORLD.level].mobs;
     ctx.drawImage(tiles['ui/topbar'],0,13*48);
     ctx.drawImage(tiles['ui/sidebar'],1008,0);
     ENTITY.updateLOS();
     blankScreen();
-    if(PC.X>=11&&PC.X<=WORLD.width-10) camera.x=PC.X;
+    if(PC.X>=11&&PC.X<=WORLD.floors[WORLD.level].width-10) camera.x=PC.X;
     else if(PC.X<11) camera.x=11;
-    else camera.x=WORLD.width-10;
-    if(PC.Y>=7&&PC.Y<=WORLD.height-6) camera.y=PC.Y;
+    else camera.x=WORLD.floors[WORLD.level].width-10;
+    if(PC.Y>=7&&PC.Y<=WORLD.floors[WORLD.level].height-6) camera.y=PC.Y;
     else if(PC.Y<7) camera.y=7;
-    else camera.y=WORLD.height-6;
+    else camera.y=WORLD.floors[WORLD.level].height-6;
     
     var tmpx=1,tmpy=1;
     for(x = camera.x-10;x<=camera.x+10;x++){
@@ -130,11 +130,11 @@ SCREEN = new function(){
 
         if(square.tile) drawTile('tiles/'+square.tile,tmpx,tmpy);
         if(square.color) self.colorOverlay(tmpx,tmpy,square.color);
-        if(square.stairs) drawTile('tiles/dStairs',tmpx,tmpy);
+        if(square.stairs) drawTile('tiles/'+square.stairs+'Stairs',tmpx,tmpy);
         if(ITEM.itemCount(x,y)>1) drawTile('items/items',tmpx,tmpy);
         if(ITEM.itemCount(x,y)==1) drawTile('items/item',tmpx,tmpy);
         if(square.trapSeen&&square.trap) drawTile('traps/'+square.trap,tmpx,tmpy);
-        if(square.door) drawTile(square.door+'Door',tmpx,tmpy);
+        if(square.door) drawTile('tiles/'+square.door+'Door',tmpx,tmpy);
         if(PC.X==x&&PC.Y==y) {
           if("pc/"+tiles[PC.prof]) drawTile("pc/"+PC.prof,tmpx,tmpy);
           else drawTile('wizard',tmpx,tmpy);

@@ -99,7 +99,7 @@ var SETUP = new function(){
       flags.setup=0;
       WORLD.level=0;
       WORLD.generateBoard();
-      
+      SOUNDS.stopMusic();
     }
     
     

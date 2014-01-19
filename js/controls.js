@@ -377,7 +377,8 @@ $(window).keydown(function(e) {
 
       case 'space':
       case 'return':
-        if(WORLD.getTile(PC.X,PC.Y).stairs) WORLD.nextFloor();
+        if(WORLD.getTile(PC.X,PC.Y).stairs) WORLD.nextFloor(1);
+        //else if(WORLD.getTile(PC.X,PC.Y).stairs=='u') WORLD.nextFloor(-1);
         ENTITY.moveEntities(0,0);
       break;
 
