@@ -53,13 +53,16 @@ var SETUP = new function(){
     }
   };
 
-  self.namePlayer=function(){
-    var name=prompt("What is your name?");
+  self.namePlayer=function(p){
+    p=p||"What is your name?\n";
+    var name=prompt(p);
     self.setupPlayer(name);
   };
 
   self.setupPlayer=function(name){
-    if(name!==null&&name!==""&&name.length<21) {
+    var success=0;
+    name = name||_.sample(self.professions[self.pList[pickp]]['DefNames'+picks]);
+    if(name.length<21) {
       items=[];
       PC={
         name:name,
@@ -83,6 +86,7 @@ var SETUP = new function(){
         tmpStats:[0,0,0,0,0,0],
         LV:1,
         XP:0,
+        XPtoNext:ENTITY.diceRoll(2,100)+100,
         equip:{head:-1,amulet:-1,cloak:-1,body:-1,weapon:-1,shield:-1,bracers:-1,gauntlets:-1,boots:-1,mWeapon:-1,missile:-1},
         LOS:6,
         powers:[],
@@ -102,6 +106,6 @@ var SETUP = new function(){
       SOUNDS.stopMusic();
     }
     
-    
+    else self.namePlayer('TOO MUCH');
   };
 };

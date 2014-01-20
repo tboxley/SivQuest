@@ -129,6 +129,7 @@ SCREEN = new function(){
         square=WORLD.getTile(x,y);
 
         if(square.tile) drawTile('tiles/'+square.tile,tmpx,tmpy);
+        
         if(square.color) self.colorOverlay(tmpx,tmpy,square.color);
         if(square.stairs) drawTile('tiles/'+square.stairs+'Stairs',tmpx,tmpy);
         if(ITEM.itemCount(x,y)>1) drawTile('items/items',tmpx,tmpy);
@@ -186,9 +187,12 @@ SCREEN = new function(){
     writeText("INT:"+(PC.INT+PC.tmpStats[5]),1024,268-96);
     writeText("Gold:"+PC.money,1024,288-96);
     writeText("Armor Rating:"+PC.armor,1024,308-96);
-    if(PC.wet) writeText(" Wet",1024,288-56,'blue');
-    if(PC.burning) writeText(" On fire!",1024,288-56,'red');
-    if(PC.poison) writeText("          Poisoned!",1024,288-56,'purple');
+    writeText("EXP:"+PC.XP,1024,328-96);
+    writeText("Next Lvl:"+(PC.XPtoNext-PC.XP),1024,348-96);
+    if(PC.wet) writeText(" Wet",1024,348-56,'blue');
+    if(PC.burning) writeText(" On fire!",1024,348-56,'red');
+    if(PC.poison) writeText("          Poisoned!",1024,348-56,'purple');
+    
   };
   
   blankScreen=function(){

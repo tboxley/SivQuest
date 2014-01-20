@@ -53,7 +53,7 @@ var WORLD=new function(){
       for(x=24;x<=30;x++){
         for(y=6;y<=12;y++){
           if(x==24||x==30||y==12||y==6) self.setTile(x,y,'wall','wall','gold');
-          else self.setTile(x,y,'floor','floor2','gold');
+          else self.setTile(x,y,'floor','floor3','gold');
         }
       }
       self.setTile(24,9,'floor','floor2','gold');
@@ -137,7 +137,7 @@ var WORLD=new function(){
         for(x = roomX-roomWidth-1;x<=roomX+roomWidth+1;x++){
           for(y=roomY-roomHeight-1;y<=roomY+roomHeight+1;y++){
             if(y==roomY-roomHeight-1||y==roomY+roomHeight+1||x==roomX-roomWidth-1||x==roomX+roomWidth+1) self.setTile(x,y,'wall','wall',c2,1);
-            else self.setTile(x,y,'floor','floor1',c1);
+            else self.setTile(x,y,'floor','floor3',c1);
           }
         }
         roomCount++;

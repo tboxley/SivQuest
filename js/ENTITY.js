@@ -220,7 +220,10 @@ var ENTITY = new function(){
   };
 
   self.killMob=function(m,s){
-    if(s=='PC') SCREEN.gameMessage('You kill the '+WORLD.floors[WORLD.level].mobs[m].name);
+    if(s=='PC') {
+      SCREEN.gameMessage('You kill the '+WORLD.floors[WORLD.level].mobs[m].name);
+      PC.XP+=40;
+    }
     WORLD.floors[WORLD.level].mobs[m]=0;
   };
   
@@ -243,7 +246,14 @@ var ENTITY = new function(){
       if(self.waitMobs.length) for(i=0;i<self.waitMobs.length;i++) self.moveMob(self.waitMobs[i]);
     }
     else SCREEN.gameMessage(check[3]);
+    if(PC.XP>=PC.XPtoNext) self.levelUp();
     SCREEN.redrawBoard();
+  };
+
+  self.levelUp=function(){
+    PC.LV++;
+    PC.XPtoNext+=PC.XPtoNext*2;
+    SCREEN.gameMessage("You have advanced to Lvl "+PC.LV);
   };
 
   self.moveMob=function(m,px,py){
@@ -289,7 +299,7 @@ var ENTITY = new function(){
 
   self.spawnStartingMobs=function(){
     WORLD.floors[WORLD.level].mobs=[];
-    _.times(28,self.spawnMob);
+    _.times(200,self.spawnMob);
   };
   
   self.checkTile=function(x,y){
@@ -351,8 +361,8 @@ var ENTITY = new function(){
     var i,x,y,square,distanceFromPC,visibility,mobs=WORLD.floors[WORLD.level].mobs;
     PC.LOS=3;
     if(!WORLD.level) PC.LOS=7;
-    else if(WORLD.inRoom(PC.X,PC.Y)) PC.LOS=8;
-    else PC.LOS=8;
+    else if(WORLD.inRoom(PC.X,PC.Y)) PC.LOS=4;
+    else PC.LOS=3;
     for(x=PC.X-PC.LOS;x<=PC.X+PC.LOS+1;x++) {
       for(y=PC.Y-PC.LOS;y<=PC.Y+PC.LOS;y++) {
         
@@ -372,7 +382,7 @@ var ENTITY = new function(){
         }
 
         if(WORLD.getTile(PC.X,PC.Y).door) square.seen=visibility;
-        else if(WORLD.inRoom(PC.X,PC.Y)==WORLD.inRoom(x,y)||((square.tile=='wall'||square.door)&&!WORLD.inRoom(PC.X,PC.Y))) square.seen=visibility;
+        else if(WORLD.inRoom(PC.X,PC.Y)==WORLD.inRoom(x,y)||((square.type=='wall'||square.door)&&!WORLD.inRoom(PC.X,PC.Y))) square.seen=visibility;
         for(i=0;i<mobs.length;i++){
           if(mobs[i].X==x&&mobs[i].Y==y&&WORLD.inRoom(mobs[i].X,mobs[i].Y)==WORLD.inRoom(PC.X,PC.Y)) SCREEN.mobsSee.push(i);
         }
