@@ -64,8 +64,8 @@ var WORLD=new function(){
     
     else{
       self.floors[self.level].rooms=[];
-      self.floors[self.level].width=_.random(40,80);
-      self.floors[self.level].height=_.random(30,60);
+      self.floors[self.level].width=80
+      self.floors[self.level].height=25
       PC.X=_.random(6,self.floors[self.level].width-6);
       PC.Y=_.random(6,self.floors[self.level].height-6);
       

@@ -3,7 +3,9 @@
 $(window).keydown(function(e) {
   'use strict';
   //e.preventDefault();
-  var kc = e.which,keys={8:'bksp', 13:'return',27:'esc',32:'space',33:'pgup',34:'pgdn',37:'left',38:'up',39:'right',40:'down'},i;
+
+  var kc = e.which,keys={8:'bksp', 13:'return',27:'esc',32:'space',33:'pgup',34:'pgdn',37:'left',38:'up',39:'right',40:'down',115:'f4'},i;
+  console.log(kc)
   for(i = 65;i<=90;i++) keys[i]=String.fromCharCode(i).toLowerCase();
   for(i = 48;i<=57;i++) keys[i]=i-48;
   //prevent history back on backspace
@@ -18,7 +20,27 @@ $(window).keydown(function(e) {
       flags.title=1;
     break;
   }
-  
+  else if(flags.gameSaved){
+    document.location='';
+  }
+  else if(flags.loadMenu) switch(keys[kc]){
+    case 'up':
+      if(curPos){
+        curPos--;
+        SCREEN.loadMenu();
+      }
+    break;
+    case 'down':
+      if(curPos<SAVE.saveList.length-1){
+        curPos++;
+        SCREEN.loadMenu();
+      }
+    break;
+    case 'return':
+      SAVE.loadGame();
+    break;
+  }
+
   else if(flags.help){
     switch(keys[kc]){
       case 0:
@@ -53,7 +75,7 @@ $(window).keydown(function(e) {
   }
 
   else if(flags.title) switch(keys[kc]){
-    case 'return':
+    case 'n':
       SETUP.startGame();
     break;
     case 'c':
@@ -61,6 +83,15 @@ $(window).keydown(function(e) {
       SCREEN.infoScreen('c');
       flags.changelog=1;
       flags.title=1;
+    break;
+    case 'l':
+      if(_.size(SAVE.saveList)){
+        curPos=0;
+        flags.loadMenu=1;
+        flags.title=0;
+        SCREEN.loadMenu();
+      }
+      else alert('No saves!');
     break;
     }
   
@@ -298,6 +329,11 @@ $(window).keydown(function(e) {
   }
   else{
     switch(keys[kc]){
+      case 'f4':
+        SCREEN.saving(0);
+        SAVE.saveGame();
+      break;
+      
       case 'left':
       case 'a':
         ENTITY.moveEntities(-1,0);

@@ -35,7 +35,7 @@ SCREEN = new function(){
     document.title='SivQuest '+gameVersion;
     writeText("SivQuest",250,220,0,224,'lhf_stratfordregular');
     writeText(gameVersion,270,294,0,32,'lhf_stratfordregular');
-    helpText("Enter => Start Game. C => Changelog.");
+    helpText("N => New Game. L => Load Game. C => Changelog.");
 
   };
   
@@ -323,5 +323,21 @@ SCREEN = new function(){
     else gameMessage('HAX');
     helpText("Esc => Cancel. Enter/Space => "+help);
     
+  };
+  self.saving=function(x){
+    x=x||0;
+    self.fullBlank();
+    if(!x) writeText("Saving... ",16,104);
+    else writeText("Game saved! Press any key to exit.",16,104);
+
+  };
+  self.loadMenu=function(){
+    var i;
+    self.fullBlank();
+    writeText("Load Game",512,32);
+    for(i=0;i<SAVE.saveList.length;i++){
+      writeText(SAVE.saveList[i],118,100+20*i);
+    }
+    writeText(">",100,100+20*curPos);
   };
 };

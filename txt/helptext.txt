@@ -39,16 +39,13 @@ Table of contents:
 7. ?!
 
 8. KeyBindings.
-
-  Movement:
-    a/left  =>  Move Left
-    s/down  =>  Move Down
-    d/right =>  Move Right
-    w/up    =>  Move Up
-    p       =>  Pickup Items
-
-  Items:
-    i       =>  Open Inventory
-    e       =>  Open Equipment
-    q       =>  Drink Menu
-    r       =>  Reading Rainbow
+  a/left  =>  Move Left
+  s/down  =>  Move Down
+  d/right =>  Move Right
+  w/up    =>  Move Up
+  p       =>  Pickup Items
+  i       =>  Open Inventory
+  e       =>  Open Equipment
+  q       =>  Drink Menu
+  r       =>  Reading Rainbow
+  f4      =>  Save Game

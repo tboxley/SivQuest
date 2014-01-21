@@ -28,6 +28,7 @@
     </script>
     <script src='js/jquery-2.0.3.min.js'></script>
     <script src='js/lodash.min.js'></script>
+    <script src='js/SAVE.js'></script>
     <script src='js/controls.js'></script>
     <script src='js/WORLD.js'></script>
     <script src='js/SCREEN.js'></script>
@@ -44,12 +45,13 @@
         cache: false
       });
       $(window).on('load',function(){
-        SCREEN.titleScreen();
         SOUNDS.init();
         ITEM.loadJSON();
         ENTITY.loadJSON();
         SETUP.loadJSON();
         //SOUNDS.playMusic('title',1);
+        SAVE.init();
+        SCREEN.titleScreen();
       });
       
     </script>
